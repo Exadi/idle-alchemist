@@ -2,7 +2,14 @@ import React, { useState, useRef } from "react";
 import { useTimer } from "../utils/hooks";
 
 const TaskBox = (props) => {
-  const { fillcolor, bgcolor, timeToFill, taskName } = props;
+  const {
+    fillcolor,
+    bgcolor,
+    timeToFill,
+    taskName,
+    upgradeable,
+    upgradeCostFunction,
+  } = props;
   const [active, setActive] = useState(false);
   const [completed, setCompleted] = useState(0);
   const [timesCompleted, setTimesCompleted] = useState(0);
@@ -11,7 +18,6 @@ const TaskBox = (props) => {
   //upgrades
   const [upgradeLevel, setUpgradeLevel] = useState(0);
   const [upgradeCost, setUpgradeCost] = useState(1);
-  const [upgradeable, setUpgradeable] = useState(true);
 
   const timerRef = useRef();
   const timerInterval = 50;
@@ -21,7 +27,7 @@ const TaskBox = (props) => {
       setTimesCompleted(timesCompleted - upgradeCost);
       let nextUpgradeLevel = upgradeLevel + 1;
       setUpgradeLevel(nextUpgradeLevel);
-      setUpgradeCost(Math.pow(2, nextUpgradeLevel));
+      setUpgradeCost(upgradeCostFunction(nextUpgradeLevel));
       setFillTime(timeToFill / nextUpgradeLevel);
     }
   };
@@ -81,7 +87,12 @@ const TaskBox = (props) => {
           Owned: {timesCompleted}
           <br />
           {upgradeable ? (
-            <button onClick={upgradeSpeed}>Upgrade: {upgradeCost}</button>
+            <button
+              disabled={timesCompleted >= upgradeCost ? "" : "disabled"}
+              onClick={upgradeSpeed}
+            >
+              Upgrade: {upgradeCost}
+            </button>
           ) : null}
           <button onClick={toggle}>{active ? "Stop" : "Start"}</button>
         </div>

@@ -10,6 +10,8 @@ function App() {
         fillcolor={"#00ddff"}
         timeToFill={2000}
         taskName={"Task Name"}
+        upgradeable={true}
+        upgradeCostFunction={(level) => Math.pow(2, level)}
       ></TaskBox>
     </div>
   );
