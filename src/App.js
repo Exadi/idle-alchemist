@@ -1,15 +1,16 @@
 import React from "react";
 import "./App.css";
-import ProgressBar from "./Components/ProgressBar";
+import TaskBox from "./Components/TaskBox";
 
 function App() {
   return (
     <div className="App">
-      <ProgressBar
+      <TaskBox
         bgcolor={"#fff"}
         fillcolor={"#00ddff"}
         timeToFill={2000}
-      ></ProgressBar>
+        taskName={"Task Name"}
+      ></TaskBox>
     </div>
   );
 }

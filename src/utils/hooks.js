@@ -6,4 +6,5 @@ export const useTimer = (callback, time) => {
     timerRef.current = setInterval(callback, time);
     return () => clearInterval(timerRef.current);
   }, [callback, time]);
+  return timerRef;
 };
