@@ -49,7 +49,7 @@ const TaskBox = (props) => {
     let index = 0;
     array.forEach((element) => {
       str += itemData[element.id].name + "*" + element.count * upgradeCost;
-      if (index < upgradeItems.length - 1) {
+      if (index < array.length - 1) {
         str += ", ";
       }
       index++;
