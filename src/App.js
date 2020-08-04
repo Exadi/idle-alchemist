@@ -11,10 +11,10 @@ function App() {
     <Provider store={store}>
       <div className="App">
         <TaskBox
-          bgcolor={"#fff"}
-          fillcolor={"#00ddff"}
+          bgColor={"#fff"}
+          fillColor={"#00ddff"}
+          taskName={"Harvest Item 0"}
           timeToFill={2000}
-          taskName={"Task Name"}
           upgradeable={true}
           upgradeItem={0}
           upgradeCostFunction={(level) => Math.pow(2, level)}

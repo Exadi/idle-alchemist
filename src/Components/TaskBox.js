@@ -3,6 +3,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTimer } from "../utils/hooks";
 import { addItem, removeItem } from "../actions/inventoryActions";
 
+/* PROPERTIES:
+taskName: Name of the task as it should be displayed in the box
+bgColor: background color of the box
+fillColor: color of the progress bar
+timeToFill: time in milliseconds to complete this task at level 0 //TODO replace with function of level and replace with speed instead of time so I can do upgrades like "increase all task speed by 20%" more easily
+upgradeable: whether you can spend resources to upgrade this task (controls display of upgrade button)
+upgradeItem: the item id required to upgrade //TODO make it possible to require multiple items
+upgradeCostFunction: a function of level that controls how much the next upgrade costs
+addItem: which item will be added (id and count) when this task finishes
+removeItem: which item will be removed (id and count) when this task finishes
+*/
 const TaskBox = (props) => {
   const dispatch = useDispatch();
   const inventory = useSelector((state) => state.inventory);
@@ -11,8 +22,8 @@ const TaskBox = (props) => {
   );
 
   const {
-    fillcolor,
-    bgcolor,
+    fillColor,
+    bgColor,
     timeToFill,
     taskName,
     upgradeable,
@@ -66,7 +77,7 @@ const TaskBox = (props) => {
   const containerStyles = {
     height: "10vw",
     width: "30vw",
-    backgroundColor: bgcolor,
+    backgroundColor: bgColor,
     borderRadius: 10,
     border: "1px solid black",
     position: "relative",
@@ -78,7 +89,7 @@ const TaskBox = (props) => {
     width: `${
       active ? Math.min((completed + timerInterval / fillTime) * 100, 100) : 0
     }%`,
-    backgroundColor: fillcolor,
+    backgroundColor: fillColor,
     borderRadius: "inherit",
     transition: `width ${active ? timerInterval / 1000 : 0}s`,
     position: "absolute",
