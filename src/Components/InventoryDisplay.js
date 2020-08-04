@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import itemData from "../data/items";
 
 const InventoryDisplay = (props) => {
   const inventory = useSelector((state) => state.inventory);
@@ -8,7 +9,7 @@ const InventoryDisplay = (props) => {
       {inventory.items.map((item) => {
         return (
           <div>
-            {item.id} count {item.count}
+            {itemData[item.id].name} count {item.count}
           </div>
         );
       })}

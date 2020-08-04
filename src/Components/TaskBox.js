@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTimer } from "../utils/hooks";
 import { addItem, removeItem } from "../actions/inventoryActions";
+import itemData from "../data/items";
 
 /* PROPERTIES:
 taskName: Name of the task as it should be displayed in the box
@@ -47,7 +48,7 @@ const TaskBox = (props) => {
     let str = "";
     let index = 0;
     array.forEach((element) => {
-      str += element.id + "*" + element.count * upgradeCost;
+      str += itemData[element.id].name + "*" + element.count * upgradeCost;
       if (index < upgradeItems.length - 1) {
         str += ", ";
       }

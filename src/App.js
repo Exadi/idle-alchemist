@@ -6,6 +6,8 @@ import InventoryDisplay from "./Components/InventoryDisplay";
 import { Provider } from "react-redux";
 import store from "./store";
 
+import itemData from "./data/items";
+
 function App() {
   return (
     <Provider store={store}>
@@ -13,7 +15,7 @@ function App() {
         <TaskBox
           bgColor={"#fff"}
           fillColor={"#00ddff"}
-          taskName={"Harvest Item 0"}
+          taskName={`Harvest ${itemData[0].name}`}
           timeToFill={2000}
           upgradeable={true}
           upgradeItems={[
@@ -26,7 +28,7 @@ function App() {
         <TaskBox
           bgColor={"#fff"}
           fillColor={"#00ddff"}
-          taskName={"Process Item 0"}
+          taskName={`Process ${itemData[0].name}`}
           timeToFill={2000}
           upgradeable={true}
           upgradeItems={[
@@ -43,7 +45,7 @@ function App() {
         <TaskBox
           bgColor={"#fff"}
           fillColor={"#00ddff"}
-          taskName={"Craft Item 3"}
+          taskName={`Craft ${itemData[3].name}`}
           timeToFill={2000}
           upgradeable={true}
           upgradeItems={[
