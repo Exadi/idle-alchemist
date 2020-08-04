@@ -16,9 +16,32 @@ function App() {
           taskName={"Harvest Item 0"}
           timeToFill={2000}
           upgradeable={true}
-          upgradeItem={0}
+          upgradeItems={[
+            { id: 0, count: 1 },
+            { id: 1, count: 2 },
+          ]}
           upgradeCostFunction={(level) => Math.pow(2, level)}
-          addItem={{ id: 0, count: 1 }}
+          resultItemsGained={[
+            { id: 0, count: 1 },
+            { id: 1, count: 2 },
+          ]}
+        ></TaskBox>
+        <TaskBox
+          bgColor={"#fff"}
+          fillColor={"#00ddff"}
+          taskName={"Craft Item 2"}
+          timeToFill={2000}
+          upgradeable={true}
+          upgradeItems={[
+            { id: 0, count: 1 },
+            { id: 1, count: 2 },
+          ]}
+          upgradeCostFunction={(level) => Math.pow(2, level)}
+          resultItemsGained={[{ id: 2, count: 1 }]}
+          resultItemsLost={[
+            { id: 0, count: 1 },
+            { id: 1, count: 1 },
+          ]}
         ></TaskBox>
         <InventoryDisplay></InventoryDisplay>
       </div>

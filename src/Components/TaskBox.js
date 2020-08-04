@@ -9,17 +9,17 @@ bgColor: background color of the box
 fillColor: color of the progress bar
 timeToFill: time in milliseconds to complete this task at level 0 //TODO replace with function of level and replace with speed instead of time so I can do upgrades like "increase all task speed by 20%" more easily
 upgradeable: whether you can spend resources to upgrade this task (controls display of upgrade button)
-upgradeItem: the item id required to upgrade //TODO make it possible to require multiple items
+upgradeItems: the item id required to upgrade
 upgradeCostFunction: a function of level that controls how much the next upgrade costs
-addItem: which item will be added (id and count) when this task finishes
-removeItem: which item will be removed (id and count) when this task finishes
+resultItemsGained: which item will be added (id and count) when this task finishes
+resultItemsLost: which item will be removed (id and count) when this task finishes
 */
 const TaskBox = (props) => {
   const dispatch = useDispatch();
   const inventory = useSelector((state) => state.inventory);
-  const upgradeItems = inventory.items.find(
+  /*const upgradeItems = inventory.items.find(
     (item) => item.id == props.upgradeItem
-  );
+  );*/
 
   const {
     fillColor,
@@ -28,6 +28,9 @@ const TaskBox = (props) => {
     taskName,
     upgradeable,
     upgradeCostFunction,
+    upgradeItems,
+    resultItemsGained,
+    resultItemsLost,
   } = props;
   const [active, setActive] = useState(false);
   const [completed, setCompleted] = useState(0);
@@ -40,10 +43,38 @@ const TaskBox = (props) => {
   const timerRef = useRef();
   const timerInterval = 50;
 
+  const requirementsDisplay = (array) => {
+    let str = "";
+    let index = 0;
+    array.forEach((element) => {
+      str += element.id + "*" + element.count * upgradeCost;
+      if (index < upgradeItems.length - 1) {
+        str += ", ";
+      }
+      index++;
+    });
+
+    return str;
+  };
+  const requirementsMet = (array, multiplier = 1) => {
+    let reqMet = true;
+    //for each item required for upgrading
+    array.forEach((element) => {
+      //try to find the item in inventory
+      let foundItem = inventory.items.find((x) => x.id === element.id);
+      console.log(foundItem);
+      if (!foundItem || foundItem.count < element.count * multiplier)
+        reqMet = false;
+    });
+    return reqMet;
+  };
+
   const upgradeSpeed = (e) => {
     e.stopPropagation();
-    if (upgradeItems.count >= upgradeCost) {
-      dispatch(removeItem({ id: props.upgradeItem, count: upgradeCost }));
+    if (requirementsMet(upgradeItems, upgradeCost)) {
+      upgradeItems.forEach((item) => {
+        dispatch(removeItem({ id: item.id, count: item.count * upgradeCost }));
+      });
       let nextUpgradeLevel = upgradeLevel + 1;
       setUpgradeLevel(nextUpgradeLevel);
       setUpgradeCost(upgradeCostFunction(nextUpgradeLevel));
@@ -52,6 +83,10 @@ const TaskBox = (props) => {
   };
 
   const toggle = () => {
+    if (!active && resultItemsLost && !requirementsMet(resultItemsLost)) {
+      //TODO probably show some kind of error notification.
+      return; //don't activate if you don't have the required items to complete it
+    }
     setActive(!active);
     setCompleted(0);
   };
@@ -60,15 +95,38 @@ const TaskBox = (props) => {
     if (active) {
       if (completed + timerInterval / fillTime >= 1) {
         let timesCompleted = Math.round(completed + timerInterval / fillTime);
-        if (props.addItem) {
-          dispatch(
-            addItem({
-              id: props.addItem.id,
-              count: props.addItem.count * timesCompleted,
-            })
+
+        if (resultItemsLost) {
+          if (!requirementsMet(resultItemsLost)) {
+            //TODO probably show some kind of error notification.
+            setActive(false);
+            return;
+          }
+          resultItemsLost.forEach((item) =>
+            dispatch(
+              removeItem({
+                id: item.id,
+                count: item.count * timesCompleted,
+              })
+            )
+          );
+        }
+        if (resultItemsGained) {
+          resultItemsGained.forEach((item) =>
+            dispatch(
+              addItem({
+                id: item.id,
+                count: item.count * timesCompleted,
+              })
+            )
           );
         }
         setCompleted(0);
+
+        if (resultItemsLost && !requirementsMet(resultItemsLost)) {
+          //TODO probably show some kind of error notification.
+          setActive(false);
+        }
       } else {
         setCompleted(completed + timerInterval / fillTime);
       }
@@ -112,16 +170,15 @@ const TaskBox = (props) => {
           <br />
           {upgradeable ? (
             <button
-              disabled={
-                upgradeItems && upgradeItems.count >= upgradeCost
-                  ? ""
-                  : "disabled"
-              }
+              disabled={requirementsMet(upgradeItems) ? "" : "disabled"}
               onClick={upgradeSpeed}
             >
-              Upgrade: {upgradeCost}
+              Upgrade: {requirementsDisplay(upgradeItems)}
             </button>
           ) : null}
+          {resultItemsLost
+            ? "Costs " + requirementsDisplay(resultItemsLost)
+            : null}
         </div>
       </div>
     </>
