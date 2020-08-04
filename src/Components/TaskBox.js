@@ -1,7 +1,15 @@
 import React, { useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useTimer } from "../utils/hooks";
+import { addItem, removeItem } from "../actions/inventoryActions";
 
 const TaskBox = (props) => {
+  const dispatch = useDispatch();
+  const inventory = useSelector((state) => state.inventory);
+  const upgradeItems = inventory.items.find(
+    (item) => item.id == props.upgradeItem
+  );
+
   const {
     fillcolor,
     bgcolor,
@@ -12,7 +20,6 @@ const TaskBox = (props) => {
   } = props;
   const [active, setActive] = useState(false);
   const [completed, setCompleted] = useState(0);
-  const [timesCompleted, setTimesCompleted] = useState(0);
   const [fillTime, setFillTime] = useState(timeToFill);
 
   //upgrades
@@ -23,8 +30,8 @@ const TaskBox = (props) => {
   const timerInterval = 50;
 
   const upgradeSpeed = () => {
-    if (timesCompleted >= upgradeCost) {
-      setTimesCompleted(timesCompleted - upgradeCost);
+    if (upgradeItems.count >= upgradeCost) {
+      dispatch(removeItem({ id: props.upgradeItem, count: upgradeCost }));
       let nextUpgradeLevel = upgradeLevel + 1;
       setUpgradeLevel(nextUpgradeLevel);
       setUpgradeCost(upgradeCostFunction(nextUpgradeLevel));
@@ -40,9 +47,15 @@ const TaskBox = (props) => {
   timerRef.current = useTimer(() => {
     if (active) {
       if (completed + timerInterval / fillTime >= 1) {
-        setTimesCompleted(
-          timesCompleted + Math.round(completed + timerInterval / fillTime)
-        );
+        let timesCompleted = Math.round(completed + timerInterval / fillTime);
+        if (props.addItem) {
+          dispatch(
+            addItem({
+              id: props.addItem.id,
+              count: props.addItem.count * timesCompleted,
+            })
+          );
+        }
         setCompleted(0);
       } else {
         setCompleted(completed + timerInterval / fillTime);
@@ -57,7 +70,7 @@ const TaskBox = (props) => {
     borderRadius: 10,
     border: "1px solid black",
     position: "relative",
-    "z-index": "1",
+    zIndex: "1",
   };
 
   const fillerStyles = {
@@ -70,12 +83,12 @@ const TaskBox = (props) => {
     transition: `width ${active ? timerInterval / 1000 : 0}s`,
     position: "absolute",
     top: "0px",
-    "z-index": "2",
+    zIndex: "2",
   };
 
   const contentStyles = {
     position: "relative",
-    "z-index": "3",
+    zIndex: "3",
   };
 
   return (
@@ -84,11 +97,14 @@ const TaskBox = (props) => {
         <div style={fillerStyles}></div>
         <div style={contentStyles}>
           <h2>{taskName}</h2>
-          Owned: {timesCompleted}
           <br />
           {upgradeable ? (
             <button
-              disabled={timesCompleted >= upgradeCost ? "" : "disabled"}
+              disabled={
+                upgradeItems && upgradeItems.count >= upgradeCost
+                  ? ""
+                  : "disabled"
+              }
               onClick={upgradeSpeed}
             >
               Upgrade: {upgradeCost}
