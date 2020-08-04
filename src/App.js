@@ -21,15 +21,12 @@ function App() {
             { id: 1, count: 2 },
           ]}
           upgradeCostFunction={(level) => Math.pow(2, level)}
-          resultItemsGained={[
-            { id: 0, count: 1 },
-            { id: 1, count: 2 },
-          ]}
+          resultItemsGained={[{ id: 0, count: 1 }]}
         ></TaskBox>
         <TaskBox
           bgColor={"#fff"}
           fillColor={"#00ddff"}
-          taskName={"Craft Item 2"}
+          taskName={"Process Item 0"}
           timeToFill={2000}
           upgradeable={true}
           upgradeItems={[
@@ -37,10 +34,27 @@ function App() {
             { id: 1, count: 2 },
           ]}
           upgradeCostFunction={(level) => Math.pow(2, level)}
-          resultItemsGained={[{ id: 2, count: 1 }]}
-          resultItemsLost={[
-            { id: 0, count: 1 },
+          resultItemsGained={[
             { id: 1, count: 1 },
+            { id: 2, count: 1 },
+          ]}
+          resultItemsLost={[{ id: 0, count: 1 }]}
+        ></TaskBox>
+        <TaskBox
+          bgColor={"#fff"}
+          fillColor={"#00ddff"}
+          taskName={"Craft Item 3"}
+          timeToFill={2000}
+          upgradeable={true}
+          upgradeItems={[
+            { id: 0, count: 1 },
+            { id: 1, count: 2 },
+          ]}
+          upgradeCostFunction={(level) => Math.pow(2, level)}
+          resultItemsGained={[{ id: 3, count: 1 }]}
+          resultItemsLost={[
+            { id: 1, count: 1 },
+            { id: 2, count: 1 },
           ]}
         ></TaskBox>
         <InventoryDisplay></InventoryDisplay>
