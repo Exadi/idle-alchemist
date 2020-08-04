@@ -40,7 +40,8 @@ const TaskBox = (props) => {
   const timerRef = useRef();
   const timerInterval = 50;
 
-  const upgradeSpeed = () => {
+  const upgradeSpeed = (e) => {
+    e.stopPropagation();
     if (upgradeItems.count >= upgradeCost) {
       dispatch(removeItem({ id: props.upgradeItem, count: upgradeCost }));
       let nextUpgradeLevel = upgradeLevel + 1;
@@ -104,7 +105,7 @@ const TaskBox = (props) => {
 
   return (
     <>
-      <div style={containerStyles}>
+      <div onClick={toggle} style={containerStyles}>
         <div style={fillerStyles}></div>
         <div style={contentStyles}>
           <h2>{taskName}</h2>
@@ -121,7 +122,6 @@ const TaskBox = (props) => {
               Upgrade: {upgradeCost}
             </button>
           ) : null}
-          <button onClick={toggle}>{active ? "Stop" : "Start"}</button>
         </div>
       </div>
     </>
