@@ -3,11 +3,11 @@ import "./App.css";
 import TaskBox from "./Components/TaskBox";
 import InventoryDisplay from "./Components/InventoryDisplay";
 import ThemeSwitch from "./Components/ThemeSwitch";
+import Navigation from "./Components/Navigation";
 
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import store from "./store";
 
-import itemData from "./data/items";
 import taskData from "./data/tasks";
 
 import { useTheme } from "./utils/hooks";
@@ -22,17 +22,22 @@ function AppWrapper() {
 
 function App() {
   const theme = useTheme();
+  const unlockedTasks = useSelector((state) => state.gameState.unlockedTasks);
+  const tab = useSelector((state) => state.gameState.selectedTab);
   const appStyles = {
     backgroundColor: theme.bgPrimary,
     height: "100%",
   };
   return (
     <div className="App" style={appStyles}>
-      {taskData.map((item) => {
-        return <TaskBox props={item}></TaskBox>;
+      <Navigation></Navigation>
+      {taskData.map((item, idx) => {
+        return unlockedTasks.includes(idx) && item.category == tab ? (
+          <TaskBox props={item} index={idx}></TaskBox>
+        ) : null;
       })}
       <InventoryDisplay></InventoryDisplay>
-
+      {unlockedTasks}
       <ThemeSwitch></ThemeSwitch>
     </div>
   );

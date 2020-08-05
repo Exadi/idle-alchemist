@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTimer } from "../utils/hooks";
 import { addItem, removeItem } from "../actions/inventoryActions";
+import { completeTask as completeTaskRedux } from "../actions/gameStateActions";
 import itemData from "../data/items";
 import { useTheme } from "../utils/hooks";
 
@@ -17,6 +18,7 @@ resultItemsLost: which item will be removed (id and count) when this task finish
 const TaskBox = (props) => {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const completedTasks = useSelector((state) => state.gameState.completedTasks);
   const inventory = useSelector((state) => state.inventory);
   /*const upgradeItems = inventory.items.find(
     (item) => item.id == props.upgradeItem
@@ -30,6 +32,7 @@ const TaskBox = (props) => {
     upgradeItems,
     resultItemsGained,
     resultItemsLost,
+    firstTimeCompleteFunction,
   } = props.props;
   const [active, setActive] = useState(false);
   const [completed, setCompleted] = useState(0);
@@ -89,42 +92,53 @@ const TaskBox = (props) => {
     setCompleted(0);
   };
 
+  const completeTask = () => {
+    let timesCompleted = Math.round(completed + timerInterval / fillTime);
+
+    if (resultItemsLost) {
+      if (!requirementsMet(resultItemsLost)) {
+        //TODO probably show some kind of error notification.
+        //TASK FAILED due to insufficient items
+        setActive(false);
+        return;
+      }
+      resultItemsLost.forEach((item) =>
+        dispatch(
+          removeItem({
+            id: item.id,
+            count: item.count * timesCompleted,
+          })
+        )
+      );
+    }
+    if (resultItemsGained) {
+      resultItemsGained.forEach((item) =>
+        dispatch(
+          addItem({
+            id: item.id,
+            count: item.count * timesCompleted,
+          })
+        )
+      );
+    }
+    setCompleted(0);
+    console.log(props);
+
+    //if this task has never been completed before, mark it as complete and execute its first time complete function
+    if (!completedTasks.includes(props.index)) {
+      dispatch(completeTaskRedux(props.index));
+      if (firstTimeCompleteFunction) firstTimeCompleteFunction();
+    }
+    if (resultItemsLost && !requirementsMet(resultItemsLost)) {
+      //TASK COMPLETED, but can't start again due to insufficient items
+      //TODO probably show some kind of error notification.
+      setActive(false);
+    }
+  };
   timerRef.current = useTimer(() => {
     if (active) {
       if (completed + timerInterval / fillTime >= 1) {
-        let timesCompleted = Math.round(completed + timerInterval / fillTime);
-
-        if (resultItemsLost) {
-          if (!requirementsMet(resultItemsLost)) {
-            //TODO probably show some kind of error notification.
-            setActive(false);
-            return;
-          }
-          resultItemsLost.forEach((item) =>
-            dispatch(
-              removeItem({
-                id: item.id,
-                count: item.count * timesCompleted,
-              })
-            )
-          );
-        }
-        if (resultItemsGained) {
-          resultItemsGained.forEach((item) =>
-            dispatch(
-              addItem({
-                id: item.id,
-                count: item.count * timesCompleted,
-              })
-            )
-          );
-        }
-        setCompleted(0);
-
-        if (resultItemsLost && !requirementsMet(resultItemsLost)) {
-          //TODO probably show some kind of error notification.
-          setActive(false);
-        }
+        completeTask();
       } else {
         setCompleted(completed + timerInterval / fillTime);
       }
