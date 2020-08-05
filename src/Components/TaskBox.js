@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTimer } from "../utils/hooks";
 import { addItem, removeItem } from "../actions/inventoryActions";
 import itemData from "../data/items";
+import { useTheme } from "../utils/hooks";
 
 /* PROPERTIES:
 taskName: Name of the task as it should be displayed in the box
@@ -17,6 +18,7 @@ resultItemsLost: which item will be removed (id and count) when this task finish
 */
 const TaskBox = (props) => {
   const dispatch = useDispatch();
+  const theme = useTheme();
   const inventory = useSelector((state) => state.inventory);
   /*const upgradeItems = inventory.items.find(
     (item) => item.id == props.upgradeItem
@@ -137,7 +139,8 @@ const TaskBox = (props) => {
   const containerStyles = {
     height: "10vw",
     width: "30vw",
-    backgroundColor: bgColor,
+    backgroundColor: theme.bgSecondary,
+    color: theme.textPrimary,
     borderRadius: 10,
     border: "1px solid black",
     position: "relative",
@@ -149,7 +152,7 @@ const TaskBox = (props) => {
     width: `${
       active ? Math.min((completed + timerInterval / fillTime) * 100, 100) : 0
     }%`,
-    backgroundColor: fillColor,
+    backgroundImage: theme.gradientPrimary,
     borderRadius: "inherit",
     transition: `width ${active ? timerInterval / 1000 : 0}s`,
     position: "absolute",

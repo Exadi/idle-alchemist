@@ -1,4 +1,10 @@
 [
-  { "name": "Dark Theme", "bgPrimary": "#21262b" },
+  {
+    "name": "Dark Theme",
+    "bgPrimary": "#21262b",
+    "bgSecondary": "#1c2025",
+    "textPrimary": "#fff",
+    "gradientPrimary": "linear-gradient(90deg,#0b7edc 0%,#1396f3 50%,#00adff)"
+  },
   { "name": "Blue Theme", "bgPrimary": "blue" }
 ]
