@@ -1,17 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import TaskBox from "./Components/TaskBox";
 import InventoryDisplay from "./Components/InventoryDisplay";
+import ThemeSwitch from "./Components/ThemeSwitch";
 
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import store from "./store";
 
 import itemData from "./data/items";
 
-function App() {
+import { createTheming } from "@callstack/react-theme-provider";
+
+import themeData from "./data/themes";
+
+const { ThemeProvider, withTheme, useTheme } = createTheming(themeData[0]);
+
+function AppWrapper() {
   return (
     <Provider store={store}>
-      <div className="App">
+      <App />
+    </Provider>
+  );
+}
+
+function App() {
+  const themeId = useSelector((state) => state.settings.theme);
+  const theme = themeData[themeId];
+  const appStyles = {
+    backgroundColor: theme.bgPrimary,
+    height: "100%",
+  };
+  return (
+    <ThemeProvider>
+      <div className="App" style={appStyles}>
         <TaskBox
           bgColor={"#fff"}
           fillColor={"#00ddff"}
@@ -60,9 +81,11 @@ function App() {
           ]}
         ></TaskBox>
         <InventoryDisplay></InventoryDisplay>
+
+        <ThemeSwitch></ThemeSwitch>
       </div>
-    </Provider>
+    </ThemeProvider>
   );
 }
 
-export default App;
+export default AppWrapper;
