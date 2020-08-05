@@ -7,8 +7,6 @@ import { useTheme } from "../utils/hooks";
 
 /* PROPERTIES:
 taskName: Name of the task as it should be displayed in the box
-bgColor: background color of the box
-fillColor: color of the progress bar
 timeToFill: time in milliseconds to complete this task at level 0 //TODO replace with function of level and replace with speed instead of time so I can do upgrades like "increase all task speed by 20%" more easily
 upgradeable: whether you can spend resources to upgrade this task (controls display of upgrade button)
 upgradeItems: the item id required to upgrade
@@ -25,8 +23,6 @@ const TaskBox = (props) => {
   );*/
 
   const {
-    fillColor,
-    bgColor,
     timeToFill,
     taskName,
     upgradeable,
@@ -65,7 +61,6 @@ const TaskBox = (props) => {
     array.forEach((element) => {
       //try to find the item in inventory
       let foundItem = inventory.items.find((x) => x.id === element.id);
-      console.log(foundItem);
       if (!foundItem || foundItem.count < element.count * multiplier)
         reqMet = false;
     });

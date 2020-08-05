@@ -6,9 +6,9 @@ const InventoryDisplay = (props) => {
   const inventory = useSelector((state) => state.inventory);
   return (
     <>
-      {inventory.items.map((item) => {
+      {inventory.items.map((item, idx) => {
         return (
-          <div>
+          <div key={idx}>
             {itemData[item.id].name} count {item.count}
           </div>
         );
