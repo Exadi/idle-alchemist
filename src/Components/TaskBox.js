@@ -30,7 +30,7 @@ const TaskBox = (props) => {
     upgradeItems,
     resultItemsGained,
     resultItemsLost,
-  } = props;
+  } = props.props;
   const [active, setActive] = useState(false);
   const [completed, setCompleted] = useState(0);
   const [fillTime, setFillTime] = useState(timeToFill);
