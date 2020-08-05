@@ -158,6 +158,7 @@ const TaskBox = (props) => {
     position: "absolute",
     top: "0px",
     zIndex: "2",
+    backgroundSize: "30vw",
   };
 
   const contentStyles = {

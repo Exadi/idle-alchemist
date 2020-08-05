@@ -4,7 +4,7 @@
     "bgPrimary": "#21262b",
     "bgSecondary": "#1c2025",
     "textPrimary": "#fff",
-    "gradientPrimary": "linear-gradient(90deg,#0b7edc 0%,#1396f3 50%,#00adff)"
+    "gradientPrimary": "linear-gradient(90deg, rgba(39,112,35,1) 0%, rgba(6,226,105,1) 100%)"
   },
   { "name": "Blue Theme", "bgPrimary": "blue" }
 ]
