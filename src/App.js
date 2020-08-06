@@ -36,9 +36,7 @@ function App() {
           <TaskBox props={item} index={idx}></TaskBox>
         ) : null;
       })}
-      <InventoryDisplay></InventoryDisplay>
-      {unlockedTasks}
-      <ThemeSwitch></ThemeSwitch>
+      {tab === "Inventory" ? <InventoryDisplay></InventoryDisplay> : null}
     </div>
   );
 }

@@ -4,7 +4,16 @@
     "bgPrimary": "#21262b",
     "bgSecondary": "#1c2025",
     "textPrimary": "#fff",
+    "textSecondary": "#ddd",
     "gradientPrimary": "linear-gradient(90deg, rgba(39,112,35,1) 0%, rgba(6,226,105,1) 100%)"
   },
-  { "name": "Blue Theme", "bgPrimary": "blue" }
+  {
+    "name": "Blue Theme",
+    "bgPrimary": "#051838",
+    "bgSecondary": "#152C55",
+    "bgTertiary": "#4D648D",
+    "textPrimary": "#fff",
+    "textSecondary": "#7688A9",
+    "gradientPrimary": "linear-gradient(90deg, rgba(39,112,35,1) 0%, rgba(6,226,105,1) 100%)"
+  }
 ]

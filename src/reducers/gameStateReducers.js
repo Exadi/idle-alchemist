@@ -6,7 +6,7 @@ import {
 } from "../actions/types";
 import { taskCategories } from "../data/tasks.js";
 const initialState = {
-  unlockedTabs: [taskCategories.gather],
+  unlockedTabs: ["Inventory", taskCategories.gather],
   unlockedTasks: [0],
   selectedTab: taskCategories.gather,
   completedTasks: [],
