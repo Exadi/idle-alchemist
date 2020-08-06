@@ -4,7 +4,8 @@ import {
   UNLOCK_TASK,
   COMPLETE_TASK,
 } from "../actions/types";
-import { taskCategories } from "../data/tasks.js";
+import taskData, { taskCategories } from "../data/tasks.js";
+
 const initialState = {
   unlockedTabs: ["Inventory", taskCategories.gather],
   unlockedTasks: [0],
@@ -12,27 +13,32 @@ const initialState = {
   completedTasks: [],
 };
 export default function (state = initialState, action) {
+  let unlockedTabs = [...state.unlockedTabs];
   switch (action.type) {
     case UNLOCK_TASK:
       let unlockedTasks = [...state.unlockedTasks];
+      let taskCategory = taskData[action.payload].category;
+      console.log(taskCategory);
+
+      if (!unlockedTabs.includes(taskCategory)) unlockedTabs.push(taskCategory);
       unlockedTasks.push(action.payload);
       return {
         ...state,
-        unlockedTasks: unlockedTasks,
+        unlockedTasks,
+        unlockedTabs,
       };
     case COMPLETE_TASK:
       let completedTasks = [...state.unlockedTasks];
       completedTasks.push(action.payload);
       return {
         ...state,
-        completedTasks: completedTasks,
+        completedTasks,
       };
     case UNLOCK_TAB:
-      let unlockedTabs = [...state.unlockedTabs];
       unlockedTabs.push(action.payload);
       return {
         ...state,
-        unlockedTabs: unlockedTabs,
+        unlockedTabs,
       };
     case CHANGE_TAB:
       return {

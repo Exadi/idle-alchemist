@@ -24,9 +24,7 @@ const taskData = [
     category: taskCategories.gather,
     unlocked: true,
     firstTimeCompleteFunction: () => {
-      console.log("Harvest completed!");
       store.dispatch(unlockTask(1));
-      store.dispatch(unlockTab(taskCategories.process));
     },
   },
   {
@@ -45,6 +43,9 @@ const taskData = [
     resultItemsLost: [{ id: 0, count: 1 }],
     category: taskCategories.process,
     unlocked: false,
+    firstTimeCompleteFunction: () => {
+      store.dispatch(unlockTask(2));
+    },
   },
   {
     taskName: `Craft ${itemData[3].name}`,
