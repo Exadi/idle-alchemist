@@ -1,12 +1,7 @@
 import itemData from "./items";
 import store from "../store";
-import { unlockTask, unlockTab } from "../actions/gameStateActions";
-
-export const taskCategories = {
-  gather: "Gather",
-  process: "Process",
-  craft: "Craft",
-};
+import { unlockTask } from "../actions/gameStateActions";
+import taskCategories from "./taskCategories.json";
 
 const taskData = [
   {
@@ -15,11 +10,9 @@ const taskData = [
     taskName: `Harvest ${itemData[0].name}`,
     timeToFill: 2000,
     upgradeable: true,
-    upgradeItems: [
-      { id: 0, count: 1 },
-      { id: 1, count: 2 },
-    ],
+    upgradeItems: [{ id: 0, count: 1 }],
     upgradeCostFunction: (level) => Math.pow(2, level),
+    fillTimeFunction: (level) => 2000 / (level + 1),
     resultItemsGained: [{ id: 0, count: 1 }],
     category: taskCategories.gather,
     unlocked: true,
@@ -36,6 +29,7 @@ const taskData = [
       { id: 1, count: 2 },
     ],
     upgradeCostFunction: (level) => Math.pow(2, level),
+    fillTimeFunction: (level) => 2000 / (level + 1),
     resultItemsGained: [
       { id: 1, count: 1 },
       { id: 2, count: 1 },
@@ -56,6 +50,7 @@ const taskData = [
       { id: 1, count: 2 },
     ],
     upgradeCostFunction: (level) => Math.pow(2, level),
+    fillTimeFunction: (level) => 2000 / (level + 1),
     resultItemsGained: [{ id: 3, count: 1 }],
     resultItemsLost: [
       { id: 1, count: 1 },

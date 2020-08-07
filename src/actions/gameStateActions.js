@@ -1,4 +1,10 @@
-import { UNLOCK_TAB, UNLOCK_TASK, CHANGE_TAB, COMPLETE_TASK } from "./types";
+import {
+  UNLOCK_TAB,
+  UNLOCK_TASK,
+  CHANGE_TAB,
+  COMPLETE_TASK,
+  MODIFY_UNLOCKED_TASK,
+} from "./types";
 
 export const unlockTab = (tabData) => {
   return {
@@ -10,6 +16,13 @@ export const unlockTab = (tabData) => {
 export const unlockTask = (taskData) => {
   return {
     type: UNLOCK_TASK,
+    payload: taskData,
+  };
+};
+
+export const modifyUnlockedTask = (taskData) => {
+  return {
+    type: MODIFY_UNLOCKED_TASK,
     payload: taskData,
   };
 };

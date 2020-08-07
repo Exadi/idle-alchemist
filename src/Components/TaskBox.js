@@ -1,10 +1,14 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTimer } from "../utils/hooks";
 import { addItem, removeItem } from "../actions/inventoryActions";
-import { completeTask as completeTaskRedux } from "../actions/gameStateActions";
+import {
+  completeTask as completeTaskRedux,
+  modifyUnlockedTask,
+} from "../actions/gameStateActions";
 import itemData from "../data/items";
 import { useTheme } from "../utils/hooks";
+import taskData from "../data/tasks";
 
 /* PROPERTIES:
 taskName: Name of the task as it should be displayed in the box
@@ -19,28 +23,20 @@ const TaskBox = (props) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const completedTasks = useSelector((state) => state.gameState.completedTasks);
+  const unlockedTasks = useSelector((state) => state.gameState.unlockedTasks);
+  const thisTask = unlockedTasks.find((task) => task.index == props.index);
   const inventory = useSelector((state) => state.inventory);
-  /*const upgradeItems = inventory.items.find(
-    (item) => item.id == props.upgradeItem
-  );*/
 
   const {
-    timeToFill,
     taskName,
     upgradeable,
     upgradeCostFunction,
+    fillTimeFunction,
     upgradeItems,
     resultItemsGained,
     resultItemsLost,
     firstTimeCompleteFunction,
-  } = props.props;
-  const [active, setActive] = useState(false);
-  const [completed, setCompleted] = useState(0);
-  const [fillTime, setFillTime] = useState(timeToFill);
-
-  //upgrades
-  const [upgradeLevel, setUpgradeLevel] = useState(0);
-  const [upgradeCost, setUpgradeCost] = useState(1);
+  } = taskData[thisTask.index];
 
   const timerRef = useRef();
   const timerInterval = 50;
@@ -49,7 +45,7 @@ const TaskBox = (props) => {
     let str = "";
     let index = 0;
     array.forEach((element) => {
-      str += itemData[element.id].name + "*" + element.count * upgradeCost;
+      str += itemData[element.id].name + "*" + element.count * getUpgradeCost();
       if (index < array.length - 1) {
         str += ", ";
       }
@@ -70,36 +66,59 @@ const TaskBox = (props) => {
     return reqMet;
   };
 
+  const getUpgradeCost = () => {
+    return upgradeCostFunction(thisTask.upgradeLevel || 0);
+  };
+
+  const getFillTime = () => {
+    return fillTimeFunction(thisTask.upgradeLevel || 0);
+  };
+
   const upgradeSpeed = (e) => {
     e.stopPropagation();
+    let upgradeCost = getUpgradeCost();
+    console.log(upgradeCost);
     if (requirementsMet(upgradeItems, upgradeCost)) {
       upgradeItems.forEach((item) => {
         dispatch(removeItem({ id: item.id, count: item.count * upgradeCost }));
       });
-      let nextUpgradeLevel = upgradeLevel + 1;
-      setUpgradeLevel(nextUpgradeLevel);
-      setUpgradeCost(upgradeCostFunction(nextUpgradeLevel));
-      setFillTime(timeToFill / nextUpgradeLevel);
+      console.log("Current upgrade level: " + thisTask.upgradeLevel || 0);
+      console.log((thisTask.upgradeLevel || 0) + 1);
+      let nextUpgradeLevel = (thisTask.upgradeLevel || 0) + 1;
+      console.log("Next upgrade level: " + nextUpgradeLevel);
+      dispatch(
+        modifyUnlockedTask({
+          ...thisTask,
+          upgradeLevel: nextUpgradeLevel,
+          timeToFill: thisTask.timeToFill / nextUpgradeLevel,
+        })
+      );
+    } else {
+      //console.log("Requirements not met!");
     }
   };
 
   const toggle = () => {
+    let active = thisTask.active;
     if (!active && resultItemsLost && !requirementsMet(resultItemsLost)) {
       //TODO probably show some kind of error notification.
       return; //don't activate if you don't have the required items to complete it
     }
-    setActive(!active);
-    setCompleted(0);
+    dispatch(
+      modifyUnlockedTask({ ...thisTask, active: !active, completed: 0 })
+    );
   };
 
   const completeTask = () => {
-    let timesCompleted = Math.round(completed + timerInterval / fillTime);
+    let timesCompleted = Math.round(
+      thisTask.completed + timerInterval / getFillTime()
+    );
 
     if (resultItemsLost) {
       if (!requirementsMet(resultItemsLost)) {
         //TODO probably show some kind of error notification.
         //TASK FAILED due to insufficient items
-        setActive(false);
+        dispatch(modifyUnlockedTask({ ...thisTask, active: false }));
         return;
       }
       resultItemsLost.forEach((item) =>
@@ -121,8 +140,7 @@ const TaskBox = (props) => {
         )
       );
     }
-    setCompleted(0);
-    console.log(props);
+    dispatch(modifyUnlockedTask({ ...thisTask, completed: 0 }));
 
     //if this task has never been completed before, mark it as complete and execute its first time complete function
     if (!completedTasks.includes(props.index)) {
@@ -132,15 +150,21 @@ const TaskBox = (props) => {
     if (resultItemsLost && !requirementsMet(resultItemsLost)) {
       //TASK COMPLETED, but can't start again due to insufficient items
       //TODO probably show some kind of error notification.
-      setActive(false);
+      dispatch(modifyUnlockedTask({ ...thisTask, active: false }));
     }
   };
   timerRef.current = useTimer(() => {
-    if (active) {
-      if (completed + timerInterval / fillTime >= 1) {
+    if (thisTask.active) {
+      if (thisTask.completed + timerInterval / getFillTime() >= 1) {
         completeTask();
       } else {
-        setCompleted(completed + timerInterval / fillTime);
+        dispatch(
+          modifyUnlockedTask({
+            ...thisTask,
+            completed: thisTask.completed + timerInterval / getFillTime(),
+          })
+        );
+        //setCompleted(completed + timerInterval / fillTime);
       }
     }
   }, timerInterval);
@@ -159,11 +183,16 @@ const TaskBox = (props) => {
   const fillerStyles = {
     height: "100%",
     width: `${
-      active ? Math.min((completed + timerInterval / fillTime) * 100, 100) : 0
+      thisTask.active
+        ? Math.min(
+            (thisTask.completed + timerInterval / getFillTime()) * 100,
+            100
+          )
+        : 0
     }%`,
     backgroundImage: theme.gradientPrimary,
     borderRadius: "inherit",
-    transition: `width ${active ? timerInterval / 1000 : 0}s`,
+    transition: `width ${thisTask.active ? timerInterval / 1000 : 0}s`,
     position: "absolute",
     top: "0px",
     zIndex: "2",
@@ -184,7 +213,11 @@ const TaskBox = (props) => {
           <br />
           {upgradeable ? (
             <button
-              disabled={requirementsMet(upgradeItems) ? "" : "disabled"}
+              disabled={
+                requirementsMet(upgradeItems, getUpgradeCost())
+                  ? ""
+                  : "disabled"
+              }
               onClick={upgradeSpeed}
             >
               Upgrade: {requirementsDisplay(upgradeItems)}

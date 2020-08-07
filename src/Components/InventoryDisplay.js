@@ -11,7 +11,7 @@ const InventoryDisplay = (props) => {
     color: theme.textPrimary,
     backgroundColor: theme.bgSecondary,
     border: `1px solid ${theme.textPrimary}`,
-    padding: "5px;",
+    padding: "5px",
   };
 
   const itemStyles = {};

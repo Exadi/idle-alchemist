@@ -9,7 +9,6 @@ import { Provider, useSelector } from "react-redux";
 import store from "./store";
 
 import taskData from "./data/tasks";
-
 import { useTheme } from "./utils/hooks";
 
 function AppWrapper() {
@@ -32,8 +31,9 @@ function App() {
     <div className="App" style={appStyles}>
       <Navigation></Navigation>
       {taskData.map((item, idx) => {
-        return unlockedTasks.includes(idx) && item.category == tab ? (
-          <TaskBox props={item} index={idx}></TaskBox>
+        return unlockedTasks.find((task) => task.index == idx) &&
+          item.category == tab ? (
+          <TaskBox index={idx}></TaskBox>
         ) : null;
       })}
       {tab === "Inventory" ? <InventoryDisplay></InventoryDisplay> : null}
