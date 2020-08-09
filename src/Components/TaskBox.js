@@ -1,14 +1,17 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useTimer } from "../utils/hooks";
-import { addItem, removeItem } from "../actions/inventoryActions";
-import {
-  completeTask as completeTaskRedux,
-  modifyUnlockedTask,
-} from "../actions/gameStateActions";
-import itemData from "../data/items";
+import { removeItem } from "../actions/inventoryActions";
+import { modifyUnlockedTask } from "../actions/gameStateActions";
 import { useTheme } from "../utils/hooks";
 import taskData from "../data/tasks";
+import {
+  requirementsMet,
+  upgradeCostDisplay,
+  costDisplay,
+  getUpgradeCost,
+  getFillTime,
+} from "../utils/taskFunctions";
+import { timerInterval } from "../utils/globalVariables";
 
 /* PROPERTIES:
 taskName: Name of the task as it should be displayed in the box
@@ -22,61 +25,16 @@ resultItemsLost: which item will be removed (id and count) when this task finish
 const TaskBox = (props) => {
   const dispatch = useDispatch();
   const theme = useTheme();
-  const completedTasks = useSelector((state) => state.gameState.completedTasks);
   const unlockedTasks = useSelector((state) => state.gameState.unlockedTasks);
-  const thisTask = unlockedTasks.find((task) => task.index == props.index);
-  const inventory = useSelector((state) => state.inventory);
+  const thisTask = unlockedTasks.find((task) => task.index === props.index);
 
-  const {
-    taskName,
-    upgradeable,
-    upgradeCostFunction,
-    fillTimeFunction,
-    upgradeItems,
-    resultItemsGained,
-    resultItemsLost,
-    firstTimeCompleteFunction,
-  } = taskData[thisTask.index];
-
-  const timerRef = useRef();
-  const timerInterval = 50;
-
-  const requirementsDisplay = (array) => {
-    let str = "";
-    let index = 0;
-    array.forEach((element) => {
-      str += itemData[element.id].name + "*" + element.count * getUpgradeCost();
-      if (index < array.length - 1) {
-        str += ", ";
-      }
-      index++;
-    });
-
-    return str;
-  };
-  const requirementsMet = (array, multiplier = 1) => {
-    let reqMet = true;
-    //for each item required for upgrading
-    array.forEach((element) => {
-      //try to find the item in inventory
-      let foundItem = inventory.items.find((x) => x.id === element.id);
-      if (!foundItem || foundItem.count < element.count * multiplier)
-        reqMet = false;
-    });
-    return reqMet;
-  };
-
-  const getUpgradeCost = () => {
-    return upgradeCostFunction(thisTask.upgradeLevel || 0);
-  };
-
-  const getFillTime = () => {
-    return fillTimeFunction(thisTask.upgradeLevel || 0);
-  };
+  const { taskName, upgradeable, upgradeItems, resultItemsLost } = taskData[
+    thisTask.index
+  ];
 
   const upgradeSpeed = (e) => {
     e.stopPropagation();
-    let upgradeCost = getUpgradeCost();
+    let upgradeCost = getUpgradeCost(thisTask);
     console.log(upgradeCost);
     if (requirementsMet(upgradeItems, upgradeCost)) {
       upgradeItems.forEach((item) => {
@@ -109,66 +67,6 @@ const TaskBox = (props) => {
     );
   };
 
-  const completeTask = () => {
-    let timesCompleted = Math.round(
-      thisTask.completed + timerInterval / getFillTime()
-    );
-
-    if (resultItemsLost) {
-      if (!requirementsMet(resultItemsLost)) {
-        //TODO probably show some kind of error notification.
-        //TASK FAILED due to insufficient items
-        dispatch(modifyUnlockedTask({ ...thisTask, active: false }));
-        return;
-      }
-      resultItemsLost.forEach((item) =>
-        dispatch(
-          removeItem({
-            id: item.id,
-            count: item.count * timesCompleted,
-          })
-        )
-      );
-    }
-    if (resultItemsGained) {
-      resultItemsGained.forEach((item) =>
-        dispatch(
-          addItem({
-            id: item.id,
-            count: item.count * timesCompleted,
-          })
-        )
-      );
-    }
-    dispatch(modifyUnlockedTask({ ...thisTask, completed: 0 }));
-
-    //if this task has never been completed before, mark it as complete and execute its first time complete function
-    if (!completedTasks.includes(props.index)) {
-      dispatch(completeTaskRedux(props.index));
-      if (firstTimeCompleteFunction) firstTimeCompleteFunction();
-    }
-    if (resultItemsLost && !requirementsMet(resultItemsLost)) {
-      //TASK COMPLETED, but can't start again due to insufficient items
-      //TODO probably show some kind of error notification.
-      dispatch(modifyUnlockedTask({ ...thisTask, active: false }));
-    }
-  };
-  timerRef.current = useTimer(() => {
-    if (thisTask.active) {
-      if (thisTask.completed + timerInterval / getFillTime() >= 1) {
-        completeTask();
-      } else {
-        dispatch(
-          modifyUnlockedTask({
-            ...thisTask,
-            completed: thisTask.completed + timerInterval / getFillTime(),
-          })
-        );
-        //setCompleted(completed + timerInterval / fillTime);
-      }
-    }
-  }, timerInterval);
-
   const containerStyles = {
     height: "10vw",
     width: "30vw",
@@ -185,7 +83,7 @@ const TaskBox = (props) => {
     width: `${
       thisTask.active
         ? Math.min(
-            (thisTask.completed + timerInterval / getFillTime()) * 100,
+            (thisTask.completed + timerInterval / getFillTime(thisTask)) * 100,
             100
           )
         : 0
@@ -214,18 +112,16 @@ const TaskBox = (props) => {
           {upgradeable ? (
             <button
               disabled={
-                requirementsMet(upgradeItems, getUpgradeCost())
+                requirementsMet(upgradeItems, getUpgradeCost(thisTask))
                   ? ""
                   : "disabled"
               }
               onClick={upgradeSpeed}
             >
-              Upgrade: {requirementsDisplay(upgradeItems)}
+              Upgrade: {upgradeCostDisplay(thisTask)}
             </button>
           ) : null}
-          {resultItemsLost
-            ? "Costs " + requirementsDisplay(resultItemsLost)
-            : null}
+          {resultItemsLost ? "Costs " + costDisplay(thisTask) : null}
         </div>
       </div>
     </>

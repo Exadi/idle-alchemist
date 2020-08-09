@@ -1,5 +1,5 @@
 import { CHANGE_THEME } from "../actions/types";
-import { taskCategories } from "../data/tasks.js";
+
 //const isEmpty = require("is-empty");
 const initialState = {
   theme: 0,

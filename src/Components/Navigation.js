@@ -35,7 +35,7 @@ export default function Navigation() {
           <a
             key={idx}
             onClick={() => dispatch(changeTab(item))}
-            style={item == selectedTab ? selectedTabStyles : tabStyles}
+            style={item === selectedTab ? selectedTabStyles : tabStyles}
           >
             {item}
           </a>

@@ -4,6 +4,7 @@ import {
   UNLOCK_TASK,
   COMPLETE_TASK,
   MODIFY_UNLOCKED_TASK,
+  MODIFY_ALL_UNLOCKED_TASKS,
 } from "../actions/types";
 import taskData from "../data/tasks.js";
 import taskCategories from "../data/taskCategories.json";
@@ -41,6 +42,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         unlockedTasks,
+      };
+    case MODIFY_ALL_UNLOCKED_TASKS:
+      return {
+        ...state,
+        unlockedTasks: action.payload,
       };
     case COMPLETE_TASK:
       let completedTasks = [...state.unlockedTasks];

@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useRef } from "react";
 import "./App.css";
 import TaskBox from "./Components/TaskBox";
 import InventoryDisplay from "./Components/InventoryDisplay";
-import ThemeSwitch from "./Components/ThemeSwitch";
 import Navigation from "./Components/Navigation";
 
 import { Provider, useSelector } from "react-redux";
 import store from "./store";
 
 import taskData from "./data/tasks";
-import { useTheme } from "./utils/hooks";
+import { useTimer, useTheme } from "./utils/hooks";
+import { tick } from "./utils/taskFunctions";
 
 function AppWrapper() {
   return (
@@ -20,6 +20,8 @@ function AppWrapper() {
 }
 
 function App() {
+  const timerInterval = 50;
+  const timerRef = useRef();
   const theme = useTheme();
   const unlockedTasks = useSelector((state) => state.gameState.unlockedTasks);
   const tab = useSelector((state) => state.gameState.selectedTab);
@@ -27,13 +29,20 @@ function App() {
     backgroundColor: theme.bgPrimary,
     height: "100%",
   };
+
+  timerRef.current = useTimer(() => {
+    unlockedTasks.forEach((task) => {
+      tick(task, timerInterval);
+    });
+  }, timerInterval);
+
   return (
     <div className="App" style={appStyles}>
       <Navigation></Navigation>
       {taskData.map((item, idx) => {
-        return unlockedTasks.find((task) => task.index == idx) &&
-          item.category == tab ? (
-          <TaskBox index={idx}></TaskBox>
+        return unlockedTasks.find((task) => task.index === idx) &&
+          item.category === tab ? (
+          <TaskBox index={idx} key={idx}></TaskBox>
         ) : null;
       })}
       {tab === "Inventory" ? <InventoryDisplay></InventoryDisplay> : null}
