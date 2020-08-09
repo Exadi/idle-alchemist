@@ -10,6 +10,7 @@ import store from "./store";
 import taskData from "./data/tasks";
 import { useTimer, useTheme } from "./utils/hooks";
 import { tick } from "./utils/taskFunctions";
+import { timerInterval } from "./utils/globalVariables";
 
 function AppWrapper() {
   return (
@@ -20,7 +21,6 @@ function AppWrapper() {
 }
 
 function App() {
-  const timerInterval = 50;
   const timerRef = useRef();
   const theme = useTheme();
   const unlockedTasks = useSelector((state) => state.gameState.unlockedTasks);
