@@ -25,7 +25,7 @@ resultItemsLost: which item will be removed (id and count) when this task finish
 const TaskBox = (props) => {
   const dispatch = useDispatch();
   const theme = useTheme();
-  const unlockedTasks = useSelector((state) => state.gameState.unlockedTasks);
+  const { unlockedTasks, maxTasks } = useSelector((state) => state.gameState);
   const thisTask = unlockedTasks.find((task) => task.index === props.index);
 
   const { taskName, upgradeable, upgradeItems, resultItemsLost } = taskData[
@@ -35,15 +35,11 @@ const TaskBox = (props) => {
   const upgradeSpeed = (e) => {
     e.stopPropagation();
     let upgradeCost = getUpgradeCost(thisTask);
-    console.log(upgradeCost);
     if (requirementsMet(upgradeItems, upgradeCost)) {
       upgradeItems.forEach((item) => {
         dispatch(removeItem({ id: item.id, count: item.count * upgradeCost }));
       });
-      console.log("Current upgrade level: " + thisTask.upgradeLevel || 0);
-      console.log((thisTask.upgradeLevel || 0) + 1);
       let nextUpgradeLevel = (thisTask.upgradeLevel || 0) + 1;
-      console.log("Next upgrade level: " + nextUpgradeLevel);
       dispatch(
         modifyUnlockedTask({
           ...thisTask,
@@ -52,15 +48,23 @@ const TaskBox = (props) => {
         })
       );
     } else {
-      //console.log("Requirements not met!");
+      //TODO probably show some kind of error notification.
     }
   };
 
   const toggle = () => {
     let active = thisTask.active;
-    if (!active && resultItemsLost && !requirementsMet(resultItemsLost)) {
-      //TODO probably show some kind of error notification.
-      return; //don't activate if you don't have the required items to complete it
+    if (!active) {
+      if (resultItemsLost && !requirementsMet(resultItemsLost)) {
+        //TODO show insufficient items notification.
+        return;
+      }
+      let activeTasks = unlockedTasks.filter((task) => task.active);
+      if (activeTasks && activeTasks.length >= maxTasks) {
+        //TODO show can't do any more tasks notification.
+        console.log("Can't do any more tasks.");
+        return;
+      }
     }
     dispatch(
       modifyUnlockedTask({ ...thisTask, active: !active, completed: 0 })

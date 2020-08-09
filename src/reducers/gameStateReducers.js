@@ -14,6 +14,7 @@ const initialState = {
   unlockedTasks: [{ index: 0 }],
   selectedTab: taskCategories.gather,
   completedTasks: [],
+  maxTasks: 1,
 };
 export default function (state = initialState, action) {
   let unlockedTasks = [...state.unlockedTasks];
@@ -49,7 +50,7 @@ export default function (state = initialState, action) {
         unlockedTasks: action.payload,
       };
     case COMPLETE_TASK:
-      let completedTasks = [...state.unlockedTasks];
+      let completedTasks = [...state.completedTasks];
       completedTasks.push(action.payload);
       return {
         ...state,

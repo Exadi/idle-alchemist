@@ -84,7 +84,6 @@ export const requirementsMet = (array, multiplier = 1) => {
     if (!foundItem || foundItem.count < element.count * multiplier)
       reqMet = false;
   });
-  console.log(reqMet);
   return reqMet;
 };
 
@@ -102,7 +101,6 @@ const arrayToString = (array, multiplier = 1) => {
   let str = "";
   let index = 0;
   array.forEach((element) => {
-    console.log(element);
     str += itemData[element.id].name + "*" + element.count * multiplier;
     if (index < array.length - 1) {
       str += ", ";

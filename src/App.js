@@ -30,10 +30,13 @@ function App() {
     height: "100%",
   };
 
-  timerRef.current = useTimer(() => {
+  const appTick = () => {
     unlockedTasks.forEach((task) => {
       tick(task, timerInterval);
     });
+  };
+  timerRef.current = useTimer(() => {
+    appTick();
   }, timerInterval);
 
   return (
