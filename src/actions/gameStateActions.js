@@ -1,17 +1,9 @@
 import {
-  UNLOCK_TAB,
   UNLOCK_TASK,
   CHANGE_TAB,
   COMPLETE_TASK,
   MODIFY_UNLOCKED_TASK,
 } from "./types";
-
-export const unlockTab = (tabData) => {
-  return {
-    type: UNLOCK_TAB,
-    payload: tabData,
-  };
-};
 
 export const unlockTask = (taskData) => {
   return {

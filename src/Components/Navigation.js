@@ -2,11 +2,13 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { changeTab } from "../actions/gameStateActions";
 import { useTheme } from "../utils/hooks";
+
+import tabsData from "../data/tabs";
+
 export default function Navigation() {
   const dispatch = useDispatch();
   const theme = useTheme();
   const selectedTab = useSelector((state) => state.gameState.selectedTab);
-  const unlockedTabs = useSelector((state) => state.gameState.unlockedTabs);
 
   const navigationStyles = {
     color: theme.textPrimary,
@@ -30,16 +32,16 @@ export default function Navigation() {
   };
   return (
     <div style={navigationStyles}>
-      {unlockedTabs.map((item, idx) => {
-        return (
+      {tabsData.map((item, idx) => {
+        return item.unlocked() ? (
           <a
             key={idx}
-            onClick={() => dispatch(changeTab(item))}
-            style={item === selectedTab ? selectedTabStyles : tabStyles}
+            onClick={() => dispatch(changeTab(item.name))}
+            style={item.name === selectedTab ? selectedTabStyles : tabStyles}
           >
-            {item}
+            {item.name}
           </a>
-        );
+        ) : null;
       })}
     </div>
   );

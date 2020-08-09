@@ -43,8 +43,7 @@ function App() {
     <div className="App" style={appStyles}>
       <Navigation></Navigation>
       {taskData.map((item, idx) => {
-        return unlockedTasks.find((task) => task.index === idx) &&
-          item.category === tab ? (
+        return item.unlocked() && item.category === tab ? (
           <TaskBox index={idx} key={idx}></TaskBox>
         ) : null;
       })}

@@ -1,6 +1,5 @@
 import itemData from "./items";
 import store from "../store";
-import { unlockTask } from "../actions/gameStateActions";
 import taskCategories from "./taskCategories.json";
 
 const taskData = [
@@ -15,10 +14,8 @@ const taskData = [
     fillTimeFunction: (level) => 2000 / (level + 1),
     resultItemsGained: [{ id: 0, count: 1 }],
     category: taskCategories.gather,
-    unlocked: true,
-    firstTimeCompleteFunction: () => {
-      store.dispatch(unlockTask(1));
-    },
+    unlocked: () => true,
+    firstTimeCompleteFunction: () => {},
   },
   {
     taskName: `Process ${itemData[0].name}`,
@@ -36,10 +33,8 @@ const taskData = [
     ],
     resultItemsLost: [{ id: 0, count: 1 }],
     category: taskCategories.process,
-    unlocked: false,
-    firstTimeCompleteFunction: () => {
-      store.dispatch(unlockTask(2));
-    },
+    unlocked: () => store.getState().gameState.completedTasks.includes(0),
+    firstTimeCompleteFunction: () => {},
   },
   {
     taskName: `Craft ${itemData[3].name}`,
@@ -57,7 +52,7 @@ const taskData = [
       { id: 2, count: 1 },
     ],
     category: taskCategories.craft,
-    unlocked: false,
+    unlocked: () => store.getState().gameState.completedTasks.includes(1),
   },
 ];
 

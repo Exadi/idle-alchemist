@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeItem } from "../actions/inventoryActions";
-import { modifyUnlockedTask } from "../actions/gameStateActions";
+import { unlockTask, modifyUnlockedTask } from "../actions/gameStateActions";
 import { useTheme } from "../utils/hooks";
 import taskData from "../data/tasks";
 import {
@@ -26,7 +26,16 @@ const TaskBox = (props) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const { unlockedTasks, maxTasks } = useSelector((state) => state.gameState);
-  const thisTask = unlockedTasks.find((task) => task.index === props.index);
+
+  //if this is not in the unlockedTasks array, add it.
+  //TODO unlockedTasks is no longer an appropriate name
+  if (!unlockedTasks.find((task) => task.index === props.index))
+    dispatch(unlockTask(props.index));
+
+  //if this is not in the unlockedTasks array, use a default object with index only to fetch task data
+  const thisTask = unlockedTasks.find((task) => task.index === props.index) || {
+    index: props.index,
+  };
 
   const { taskName, upgradeable, upgradeItems, resultItemsLost } = taskData[
     thisTask.index
