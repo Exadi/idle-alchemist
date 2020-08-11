@@ -20,6 +20,8 @@ export const modifyUnlockedTask = (taskData) => {
 };
 
 export const completeTask = (taskData) => {
+  console.log("Marking task as complete: ");
+  console.log(taskData);
   return {
     type: COMPLETE_TASK,
     payload: taskData,

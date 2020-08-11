@@ -2,5 +2,6 @@
   { "id": 0, "name": "Ironflower" },
   { "id": 1, "name": "Ironflower Leaves" },
   { "id": 2, "name": "Iron" },
-  { "id": 3, "name": "Ironflower Tea" }
+  { "id": 3, "name": "Ironflower Tea" },
+  { "id": 4, "name": "Sticks" }
 ]

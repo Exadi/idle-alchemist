@@ -9,7 +9,7 @@ import store from "./store";
 
 import taskData from "./data/tasks";
 import { useTimer, useTheme } from "./utils/hooks";
-import { tick } from "./utils/taskFunctions";
+import { tick, taskIsCompleted } from "./utils/taskFunctions";
 import { timerInterval } from "./utils/globalVariables";
 import { saveState, deleteState } from "./utils/localStorage";
 
@@ -27,6 +27,8 @@ function App() {
   const theme = useTheme();
   const unlockedTasks = useSelector((state) => state.gameState.unlockedTasks);
   const tab = useSelector((state) => state.gameState.selectedTab);
+  //only here to cause re-render of the component when a task runs out. Otherwise, its box remains visible until clicked again.
+  const completedTasks = useSelector((state) => state.gameState.completedTasks);
   const autoSaveInterval = useSelector(
     (state) => state.settings.autoSaveInterval
   );
@@ -57,14 +59,22 @@ function App() {
     <div className="App" style={appStyles}>
       <Navigation></Navigation>
       {taskData.map((item, idx) => {
-        return item.unlocked() && item.category === tab ? (
-          <TaskBox index={idx} key={idx}></TaskBox>
-        ) : null;
+        const unlocked = item.unlocked === undefined || item.unlocked;
+        const unlockedTask = unlockedTasks.find((task) => task.index === idx);
+        //if limit is not 0 and it's either not a one time task or it hasn't been completed, it is available
+        const limitAvailable =
+          (unlockedTask === undefined || unlockedTask.limit !== 0) &&
+          (!item.oneTimeOnly || !taskIsCompleted(idx));
+        const visible = unlocked && limitAvailable && item.category === tab;
+
+        console.log(`${item.taskName} visible? ${idx}`);
+
+        return visible ? <TaskBox index={idx} key={idx}></TaskBox> : null;
       })}
       {tab === "Inventory" ? <InventoryDisplay></InventoryDisplay> : null}
       {
-        //move this to settings page later
-        //<button onClick={deleteState("autosave")}>Delete Save</button>
+        //TODO move this to settings page later
+        <button onClick={deleteState("autosave")}>Delete Save</button>
       }
     </div>
   );

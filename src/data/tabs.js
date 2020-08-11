@@ -1,6 +1,15 @@
 import taskData from "./tasks";
 import taskCategories from "./taskCategories.json";
 
+const checkUnlockedInCategory = (category) => {
+  return (
+    taskData.find((task) => {
+      const unlocked = task.unlocked === undefined || task.unlocked();
+      return unlocked && task.category === category;
+    }) !== undefined
+  );
+};
+
 let tabsData = [
   {
     name: "Inventory",
@@ -13,17 +22,11 @@ let tabsData = [
   {
     name: taskCategories.process,
     //unlock this if any task in its category is unlocked
-    unlocked: () =>
-      taskData.find(
-        (task) => task.unlocked() && task.category === taskCategories.process
-      ) !== undefined,
+    unlocked: () => checkUnlockedInCategory(taskCategories.process),
   },
   {
     name: taskCategories.craft,
-    unlocked: () =>
-      taskData.find(
-        (task) => task.unlocked() && task.category === taskCategories.craft
-      ) !== undefined,
+    unlocked: () => checkUnlockedInCategory(taskCategories.craft),
   },
 ];
 

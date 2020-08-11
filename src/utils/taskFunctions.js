@@ -29,9 +29,13 @@ const completeTask = (task) => {
     resultItemsLost,
     resultItemsGained,
     firstTimeCompleteFunction,
+    oneTimeOnly,
   } = dbTask;
-  let timesCompleted = Math.round(
-    task.completed + timerInterval / getFillTime(task)
+  let { limit } = task;
+  //don't complete the task more times than the remaining limit
+  let timesCompleted = Math.min(
+    Math.round(task.completed + timerInterval / getFillTime(task)),
+    limit
   );
 
   if (resultItemsLost) {
@@ -60,7 +64,11 @@ const completeTask = (task) => {
       )
     );
   }
-  store.dispatch(modifyUnlockedTask({ ...task, completed: 0 }));
+  const newLimit = limit ? limit - timesCompleted : undefined;
+  const active = newLimit > 0 && !oneTimeOnly;
+  store.dispatch(
+    modifyUnlockedTask({ ...task, completed: 0, limit: newLimit, active })
+  );
 
   //if this task has never been completed before, mark it as complete and execute its first time complete function
   if (!store.getState().gameState.completedTasks.includes(task.index)) {
@@ -117,4 +125,8 @@ export const getUpgradeCost = (task) => {
 
 export const getFillTime = (task) => {
   return taskData[task.index].fillTimeFunction(task.upgradeLevel || 0);
+};
+
+export const taskIsCompleted = (taskIndex) => {
+  return store.getState().gameState.completedTasks.includes(taskIndex);
 };

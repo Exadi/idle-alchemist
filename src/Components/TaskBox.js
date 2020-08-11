@@ -25,7 +25,9 @@ resultItemsLost: which item will be removed (id and count) when this task finish
 const TaskBox = (props) => {
   const dispatch = useDispatch();
   const theme = useTheme();
-  const { unlockedTasks, maxTasks } = useSelector((state) => state.gameState);
+  const { unlockedTasks, maxTasks, completedTasks } = useSelector(
+    (state) => state.gameState
+  );
 
   //if this is not in the unlockedTasks array, add it.
   //TODO unlockedTasks is no longer an appropriate name
@@ -33,13 +35,26 @@ const TaskBox = (props) => {
     dispatch(unlockTask(props.index));
 
   //if this is not in the unlockedTasks array, use a default object with index only to fetch task data
-  const thisTask = unlockedTasks.find((task) => task.index === props.index) || {
-    index: props.index,
-  };
+  const foundTask = unlockedTasks.find((task) => task.index === props.index);
+  const thisTask = foundTask
+    ? {
+        ...foundTask,
+        //get these from database/props if not found since they need to be loaded before anything is done with the task
+        index: foundTask.index !== undefined ? foundTask.index : props.index,
+        limit:
+          foundTask.limit !== undefined
+            ? foundTask.limit
+            : taskData[props.index].limit,
+      }
+    : { index: props.index };
 
-  const { taskName, upgradeable, upgradeItems, resultItemsLost } = taskData[
-    thisTask.index
-  ];
+  const {
+    taskName,
+    upgradeable,
+    upgradeItems,
+    resultItemsLost,
+    oneTimeOnly,
+  } = taskData[thisTask.index];
 
   const upgradeSpeed = (e) => {
     e.stopPropagation();
@@ -135,6 +150,7 @@ const TaskBox = (props) => {
             </button>
           ) : null}
           {resultItemsLost ? "Costs " + costDisplay(thisTask) : null}
+          <div>{oneTimeOnly ? "One time only" : thisTask.limit}</div>
         </div>
       </div>
     </>
