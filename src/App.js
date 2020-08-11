@@ -63,7 +63,7 @@ function App() {
     <div className="App" style={appStyles}>
       <Navigation></Navigation>
       {taskData.map((item, idx) => {
-        const unlocked = item.unlocked === undefined || item.unlocked;
+        const unlocked = item.unlocked === undefined || item.unlocked();
         const unlockedTask = unlockedTasks.find((task) => task.index === idx);
         //if limit is not 0 and it's either not a one time task or it hasn't been completed, it is available
         const showIfDepleted =

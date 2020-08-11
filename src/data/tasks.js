@@ -44,7 +44,7 @@ const taskData = [
     unlocked: () => store.getState().gameState.completedTasks.includes(5),
     firstTimeCompleteFunction: () => {},
   },
-  //2
+  //2 - Craft ironflower tea
   {
     ...defaults,
     taskName: `Craft ${itemData[3].name}`,
@@ -70,7 +70,7 @@ const taskData = [
     category: taskCategories.gather,
     resultItemsGained: [{ id: 4, count: 1 }],
     upgradeable: false,
-    fillTimeFunction: (level) => 4000 / (level + 1),
+    fillTimeFunction: (level) => 4000,
     limit: 10,
   },
   //4
@@ -80,7 +80,7 @@ const taskData = [
     resultItemsGained: [{ id: 5, count: 1 }],
     category: taskCategories.gather,
     upgradeable: false,
-    fillTimeFunction: (level) => 4000 / (level + 1),
+    fillTimeFunction: (level) => 4000,
     limit: 10,
   },
   //5

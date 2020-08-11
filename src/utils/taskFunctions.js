@@ -64,8 +64,8 @@ const completeTask = (task) => {
       )
     );
   }
-  const newLimit = limit ? limit - timesCompleted : undefined;
-  const active = newLimit > 0 && !oneTimeOnly;
+  const newLimit = limit !== undefined ? limit - timesCompleted : undefined;
+  const active = (newLimit === undefined || newLimit > 0) && !oneTimeOnly;
   store.dispatch(
     modifyUnlockedTask({ ...task, completed: 0, limit: newLimit, active })
   );
