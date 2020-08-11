@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import "./App.css";
 import TaskBox from "./Components/TaskBox";
 import InventoryDisplay from "./Components/InventoryDisplay";
@@ -11,6 +11,7 @@ import taskData from "./data/tasks";
 import { useTimer, useTheme } from "./utils/hooks";
 import { tick } from "./utils/taskFunctions";
 import { timerInterval } from "./utils/globalVariables";
+import { saveState } from "./utils/localStorage";
 
 function AppWrapper() {
   return (
@@ -22,9 +23,13 @@ function AppWrapper() {
 
 function App() {
   const timerRef = useRef();
+  const autoSaveTimerRef = useRef();
   const theme = useTheme();
   const unlockedTasks = useSelector((state) => state.gameState.unlockedTasks);
   const tab = useSelector((state) => state.gameState.selectedTab);
+  const autoSaveInterval = useSelector(
+    (state) => state.settings.autoSaveInterval
+  );
   const appStyles = {
     backgroundColor: theme.bgPrimary,
     height: "100%",
@@ -35,9 +40,18 @@ function App() {
       tick(task, timerInterval);
     });
   };
+
   timerRef.current = useTimer(() => {
     appTick();
   }, timerInterval);
+
+  //this only needs to be reset if autosave interval changes which my useTimer hook doesn't do (it resets it every game tick causing it to never actually run)
+  useEffect(() => {
+    autoSaveTimerRef.current = setInterval(() => {
+      saveState(store.getState(), "autosave");
+    }, autoSaveInterval);
+    return () => clearInterval(autoSaveTimerRef.current);
+  }, [autoSaveInterval]);
 
   return (
     <div className="App" style={appStyles}>

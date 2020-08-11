@@ -3,6 +3,7 @@ import { CHANGE_THEME } from "../actions/types";
 //const isEmpty = require("is-empty");
 const initialState = {
   theme: 0,
+  autoSaveInterval: 5000,
 };
 export default function (state = initialState, action) {
   switch (action.type) {
