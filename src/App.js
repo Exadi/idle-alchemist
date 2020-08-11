@@ -30,7 +30,9 @@ function App() {
   //only here to cause re-render of the component when a task runs out. Otherwise, its box remains visible until clicked again.
   const completedTasks = useSelector((state) => state.gameState.completedTasks);
 
-  const { showUsedUpTasks } = useSelector((state) => state.settings);
+  const { showDepletedButRecoverableTasks } = useSelector(
+    (state) => state.settings
+  );
   const autoSaveInterval = useSelector(
     (state) => state.settings.autoSaveInterval
   );
@@ -64,11 +66,12 @@ function App() {
         const unlocked = item.unlocked === undefined || item.unlocked;
         const unlockedTask = unlockedTasks.find((task) => task.index === idx);
         //if limit is not 0 and it's either not a one time task or it hasn't been completed, it is available
-        const showIfUsed = item.limitRecoverable && showUsedUpTasks;
+        const showIfDepleted =
+          item.limitRecoverable && showDepletedButRecoverableTasks;
         const limitAvailable =
           (unlockedTask === undefined ||
             unlockedTask.limit !== 0 ||
-            showIfUsed) &&
+            showIfDepleted) &&
           (!item.oneTimeOnly || !taskIsCompleted(idx));
 
         const visible = unlocked && limitAvailable && item.category === tab;

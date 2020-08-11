@@ -4,7 +4,7 @@ import { CHANGE_THEME } from "../actions/types";
 const initialState = {
   theme: 0,
   autoSaveInterval: 5000,
-  showUsedUpTasks: true,
+  showDepletedButRecoverableTasks: true,
 };
 export default function (state = initialState, action) {
   switch (action.type) {

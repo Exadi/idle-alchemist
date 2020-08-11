@@ -157,7 +157,8 @@ const TaskBox = (props) => {
           ) : null}
           {resultItemsLost ? "Costs " + costDisplay(thisTask) : null}
           <div>
-            {oneTimeOnly ? "One time only." : `${thisTask.limit} remaining.`}
+            {oneTimeOnly ? "One time only." : null}
+            {thisTask.limit ? `${thisTask.limit} remaining.` : null}
           </div>
         </div>
       </div>
