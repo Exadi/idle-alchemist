@@ -18,3 +18,11 @@ export const saveState = (state, slotName) => {
     // ignore write errors
   }
 };
+
+export const deleteState = (slotName) => {
+  try {
+    localStorage.removeItem(slotName);
+  } catch {
+    // ignore write errors
+  }
+};

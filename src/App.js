@@ -11,7 +11,7 @@ import taskData from "./data/tasks";
 import { useTimer, useTheme } from "./utils/hooks";
 import { tick } from "./utils/taskFunctions";
 import { timerInterval } from "./utils/globalVariables";
-import { saveState } from "./utils/localStorage";
+import { saveState, deleteState } from "./utils/localStorage";
 
 function AppWrapper() {
   return (
@@ -62,6 +62,10 @@ function App() {
         ) : null;
       })}
       {tab === "Inventory" ? <InventoryDisplay></InventoryDisplay> : null}
+      {
+        //move this to settings page later
+        //<button onClick={deleteState("autosave")}>Delete Save</button>
+      }
     </div>
   );
 }
