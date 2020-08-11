@@ -1,7 +1,7 @@
 import itemData from "../data/items";
 import taskData from "../data/tasks";
 import store from "../store";
-import { addItem, removeItem } from "../actions/inventoryActions";
+import { addItem, removeItem, setItemCount } from "../actions/inventoryActions";
 import {
   completeTask as completeTaskRedux,
   modifyUnlockedTask,
@@ -89,8 +89,20 @@ export const requirementsMet = (array, multiplier = 1) => {
   array.forEach((element) => {
     //try to find the item in inventory
     let foundItem = inventory.items.find((x) => x.id === element.id);
-    if (!foundItem || foundItem.count < element.count * multiplier)
+    if (!foundItem) {
       reqMet = false;
+      return;
+    }
+    //fix NaN items
+    if (isNaN(foundItem.count)) {
+      store.dispatch(setItemCount({ id: element.id, count: 0 }));
+      reqMet = false;
+      return;
+    }
+    if (foundItem.count < element.count * multiplier) {
+      reqMet = false;
+      return;
+    }
   });
   return reqMet;
 };

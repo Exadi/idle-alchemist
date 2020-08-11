@@ -79,8 +79,6 @@ function App() {
     })
     .filter((task) => task !== null);
 
-  console.log(visibleTasks);
-
   return (
     <div className="App" style={appStyles}>
       <Navigation></Navigation>

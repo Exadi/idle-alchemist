@@ -1,4 +1,4 @@
-import { ADD_ITEM, REMOVE_ITEM } from "../actions/types";
+import { ADD_ITEM, REMOVE_ITEM, SET_ITEM_COUNT } from "../actions/types";
 //const isEmpty = require("is-empty");
 const initialState = {
   items: [],
@@ -22,6 +22,15 @@ export default function (state = initialState, action) {
       item = newItems.find((element) => element.id === action.payload.id);
       if (item) {
         item.count -= action.payload.count;
+      }
+      return {
+        ...state,
+        items: newItems,
+      };
+    case SET_ITEM_COUNT:
+      item = newItems.find((element) => element.id === action.payload.id);
+      if (item) {
+        item.count = action.payload.count;
       }
       return {
         ...state,

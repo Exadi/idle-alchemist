@@ -1,5 +1,6 @@
 export const ADD_ITEM = "ADD_ITEM";
 export const REMOVE_ITEM = "REMOVE_ITEM";
+export const SET_ITEM_COUNT = "SET_ITEM_COUNT";
 
 export const CHANGE_THEME = "CHANGE_THEME";
 
