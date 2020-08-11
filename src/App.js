@@ -39,6 +39,7 @@ function App() {
   const appStyles = {
     backgroundColor: theme.bgPrimary,
     height: "100%",
+    color: theme.textPrimary,
   };
 
   const appTick = () => {
@@ -59,25 +60,35 @@ function App() {
     return () => clearInterval(autoSaveTimerRef.current);
   }, [autoSaveInterval]);
 
+  let visibleTasks = taskData
+    .map((item, idx) => {
+      const unlocked = item.unlocked === undefined || item.unlocked();
+      const unlockedTask = unlockedTasks.find((task) => task.index === idx);
+      //if limit is not 0 and it's either not a one time task or it hasn't been completed, it is available
+      const showIfDepleted =
+        item.limitRecoverable && showDepletedButRecoverableTasks;
+      const limitAvailable =
+        (unlockedTask === undefined ||
+          unlockedTask.limit !== 0 ||
+          showIfDepleted) &&
+        (!item.oneTimeOnly || !taskIsCompleted(idx));
+
+      const visible = unlocked && limitAvailable && item.category === tab;
+
+      return visible ? <TaskBox index={idx} key={idx}></TaskBox> : null;
+    })
+    .filter((task) => task !== null);
+
+  console.log(visibleTasks);
+
   return (
     <div className="App" style={appStyles}>
       <Navigation></Navigation>
-      {taskData.map((item, idx) => {
-        const unlocked = item.unlocked === undefined || item.unlocked();
-        const unlockedTask = unlockedTasks.find((task) => task.index === idx);
-        //if limit is not 0 and it's either not a one time task or it hasn't been completed, it is available
-        const showIfDepleted =
-          item.limitRecoverable && showDepletedButRecoverableTasks;
-        const limitAvailable =
-          (unlockedTask === undefined ||
-            unlockedTask.limit !== 0 ||
-            showIfDepleted) &&
-          (!item.oneTimeOnly || !taskIsCompleted(idx));
-
-        const visible = unlocked && limitAvailable && item.category === tab;
-
-        return visible ? <TaskBox index={idx} key={idx}></TaskBox> : null;
-      })}
+      {visibleTasks.length > 0 ? (
+        visibleTasks
+      ) : (
+        <div>No available tasks in this category.</div>
+      )}
       {tab === "Inventory" ? <InventoryDisplay></InventoryDisplay> : null}
       {
         //TODO move this to settings page later

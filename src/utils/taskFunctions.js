@@ -35,7 +35,7 @@ const completeTask = (task) => {
   //don't complete the task more times than the remaining limit
   let timesCompleted = Math.min(
     Math.round(task.completed + timerInterval / getFillTime(task)),
-    limit
+    limit || 1
   );
 
   if (resultItemsLost) {
