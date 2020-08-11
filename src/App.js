@@ -38,7 +38,7 @@ function App() {
   );
   const appStyles = {
     backgroundColor: theme.bgPrimary,
-    height: "100%",
+    minHeight: "100vh",
     color: theme.textPrimary,
   };
 
