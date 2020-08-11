@@ -12,6 +12,7 @@ import { useTimer, useTheme } from "./utils/hooks";
 import { tick, taskIsCompleted } from "./utils/taskFunctions";
 import { timerInterval } from "./utils/globalVariables";
 import { saveState, deleteState } from "./utils/localStorage";
+import taskCategories from "./data/taskCategories.json";
 
 function AppWrapper() {
   return (
@@ -84,9 +85,9 @@ function App() {
       <Navigation></Navigation>
       {visibleTasks.length > 0 ? (
         visibleTasks
-      ) : (
+      ) : Object.values(taskCategories).indexOf(tab) >= 0 ? (
         <div>No available tasks in this category.</div>
-      )}
+      ) : null}
       {tab === "Inventory" ? <InventoryDisplay></InventoryDisplay> : null}
       {
         //TODO move this to settings page later
