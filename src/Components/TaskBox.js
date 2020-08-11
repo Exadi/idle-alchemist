@@ -25,9 +25,7 @@ resultItemsLost: which item will be removed (id and count) when this task finish
 const TaskBox = (props) => {
   const dispatch = useDispatch();
   const theme = useTheme();
-  const { unlockedTasks, maxTasks, completedTasks } = useSelector(
-    (state) => state.gameState
-  );
+  const { unlockedTasks, maxTasks } = useSelector((state) => state.gameState);
 
   //if this is not in the unlockedTasks array, add it.
   //TODO unlockedTasks is no longer an appropriate name
@@ -81,6 +79,7 @@ const TaskBox = (props) => {
     if (!active) {
       if (resultItemsLost && !requirementsMet(resultItemsLost)) {
         //TODO show insufficient items notification.
+        console.log("Insufficient materials.");
         return;
       }
       let activeTasks = unlockedTasks.filter((task) => task.active);
@@ -90,7 +89,7 @@ const TaskBox = (props) => {
         return;
       }
 
-      if (thisTask.limit == 0) {
+      if (thisTask.limit === 0) {
         //TODO show can't do any more of this task notification.
         console.log("Limit is at 0.");
         return;

@@ -10,6 +10,7 @@ const defaults = {
 };
 
 const taskData = [
+  //0
   {
     ...defaults,
     bgColor: "#fff",
@@ -23,6 +24,7 @@ const taskData = [
     resultItemsGained: [{ id: 0, count: 1 }],
     category: taskCategories.gather,
   },
+  //1
   {
     ...defaults,
     taskName: `Process ${itemData[0].name}`,
@@ -39,9 +41,10 @@ const taskData = [
     ],
     resultItemsLost: [{ id: 0, count: 1 }],
     category: taskCategories.process,
-    unlocked: () => store.getState().gameState.completedTasks.includes(0),
+    unlocked: () => store.getState().gameState.completedTasks.includes(5),
     firstTimeCompleteFunction: () => {},
   },
+  //2
   {
     ...defaults,
     taskName: `Craft ${itemData[3].name}`,
@@ -60,22 +63,41 @@ const taskData = [
     category: taskCategories.craft,
     unlocked: () => store.getState().gameState.completedTasks.includes(1),
   },
+  //3
   {
     ...defaults,
     taskName: `Gather ${itemData[4].name}`,
     category: taskCategories.gather,
+    resultItemsGained: [{ id: 4, count: 1 }],
     upgradeable: false,
     fillTimeFunction: (level) => 4000 / (level + 1),
-    oneTimeOnly: true,
+    limit: 10,
   },
+  //4
   {
     ...defaults,
-    taskName: `Gather ${itemData[4].name} 2`,
+    taskName: `Gather ${itemData[5].name}`,
+    resultItemsGained: [{ id: 5, count: 1 }],
     category: taskCategories.gather,
     upgradeable: false,
     fillTimeFunction: (level) => 4000 / (level + 1),
-    limit: 5,
-    limitRecoverable: true,
+    limit: 10,
+  },
+  //5
+  {
+    ...defaults,
+    taskName: `Build Campfire`,
+    category: taskCategories.craft,
+    upgradeable: false,
+    resultItemsLost: [
+      { id: 4, count: 10 },
+      { id: 5, count: 10 },
+    ],
+    fillTimeFunction: () => 60000,
+    oneTimeOnly: true,
+    unlocked: () =>
+      store.getState().gameState.completedTasks.includes(3) &&
+      store.getState().gameState.completedTasks.includes(4),
   },
 ];
 

@@ -76,14 +76,19 @@ function App() {
 
         const visible = unlocked && limitAvailable && item.category === tab;
 
-        console.log(`${item.taskName} visible? ${idx}`);
-
         return visible ? <TaskBox index={idx} key={idx}></TaskBox> : null;
       })}
       {tab === "Inventory" ? <InventoryDisplay></InventoryDisplay> : null}
       {
         //TODO move this to settings page later
-        <button onClick={deleteState("autosave")}>Delete Save</button>
+        <button
+          onClick={() => {
+            clearInterval(autoSaveTimerRef.current);
+            deleteState("autosave");
+          }}
+        >
+          Delete Save
+        </button>
       }
     </div>
   );
