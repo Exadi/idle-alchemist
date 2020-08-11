@@ -89,6 +89,12 @@ const TaskBox = (props) => {
         console.log("Can't do any more tasks.");
         return;
       }
+
+      if (thisTask.limit == 0) {
+        //TODO show can't do any more of this task notification.
+        console.log("Limit is at 0.");
+        return;
+      }
     }
     dispatch(
       modifyUnlockedTask({ ...thisTask, active: !active, completed: 0 })
@@ -150,7 +156,9 @@ const TaskBox = (props) => {
             </button>
           ) : null}
           {resultItemsLost ? "Costs " + costDisplay(thisTask) : null}
-          <div>{oneTimeOnly ? "One time only" : thisTask.limit}</div>
+          <div>
+            {oneTimeOnly ? "One time only." : `${thisTask.limit} remaining.`}
+          </div>
         </div>
       </div>
     </>

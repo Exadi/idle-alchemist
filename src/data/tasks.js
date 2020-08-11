@@ -75,6 +75,7 @@ const taskData = [
     upgradeable: false,
     fillTimeFunction: (level) => 4000 / (level + 1),
     limit: 5,
+    limitRecoverable: true,
   },
 ];
 
