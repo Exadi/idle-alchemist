@@ -83,10 +83,6 @@ const TaskBox = (props) => {
             taskData[thisTask.index].taskName
           }.`,
           type: "danger",
-          dismiss: {
-            duration: 5000,
-            onScreen: true,
-          },
         });
         return;
       }
@@ -97,10 +93,6 @@ const TaskBox = (props) => {
           title: "You can't do that!",
           message: `You can't do any more tasks at one time. Click a task to stop doing it.`,
           type: "danger",
-          dismiss: {
-            duration: 5000,
-            onScreen: true,
-          },
         });
         console.log("Can't do any more tasks.");
         return;
@@ -111,10 +103,6 @@ const TaskBox = (props) => {
           title: "You can't do that!",
           message: `There aren't any more.`,
           type: "danger",
-          dismiss: {
-            duration: 5000,
-            onScreen: true,
-          },
         });
         return;
       }

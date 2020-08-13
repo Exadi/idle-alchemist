@@ -45,10 +45,6 @@ const completeTask = (task) => {
         title: "You can't do that!",
         message: `You don't have the required items to finish ${task.taskName}. It has been cancelled.`,
         type: "danger",
-        dismiss: {
-          duration: 5000,
-          onScreen: true,
-        },
       });
       store.dispatch(modifyUnlockedTask({ ...task, active: false }));
       return;
@@ -89,7 +85,7 @@ const completeTask = (task) => {
         notify({
           title: "Content unlocked",
           message: `You can now ${taskData[i].taskName} on the ${taskData[i].category} tab.`,
-          duration: 0,
+          dismiss: { duration: 0 },
         });
         console.log(taskData[i].taskName + " unlocked!");
       }
@@ -108,10 +104,6 @@ const completeTask = (task) => {
         taskData[task.index].taskName
       } again. It has been cancelled.`,
       type: "danger",
-      dismiss: {
-        duration: 5000,
-        onScreen: true,
-      },
     });
     store.dispatch(modifyUnlockedTask({ ...task, active: false }));
   }
@@ -178,7 +170,12 @@ export const taskIsCompleted = (taskIndex) => {
   return store.getState().gameState.completedTasks.includes(taskIndex);
 };
 
-export const notify = ({ title, message, type = "success", dismiss }) => {
+export const notify = ({
+  title,
+  message,
+  type = "success",
+  dismiss = { duration: 5000, onScreen: true },
+}) => {
   notifStore.addNotification({
     title,
     message,
