@@ -7,6 +7,7 @@ import {
   modifyUnlockedTask,
 } from "../actions/gameStateActions";
 import { timerInterval } from "../utils/globalVariables";
+import { store as notifStore } from "react-notifications-component";
 
 export const tick = (task) => {
   if (task.active) {
@@ -40,8 +41,11 @@ const completeTask = (task) => {
 
   if (resultItemsLost) {
     if (!requirementsMet(resultItemsLost)) {
-      //TODO probably show some kind of error notification.
-      //TASK FAILED due to insufficient items
+      notify({
+        title: "You can't do that!",
+        message: `You don't have the required items to finish ${task.taskName}. It has been cancelled.`,
+        type: "danger",
+      });
       store.dispatch(modifyUnlockedTask({ ...task, active: false }));
       return;
     }
@@ -72,12 +76,33 @@ const completeTask = (task) => {
 
   //if this task has never been completed before, mark it as complete and execute its first time complete function
   if (!store.getState().gameState.completedTasks.includes(task.index)) {
+    let unlockedBefore = taskData.map((item) => item.unlocked());
     store.dispatch(completeTaskRedux(task.index));
+    let unlockedAfter = taskData.map((item) => item.unlocked());
+    //iterate through the before/after arrays to see what changed
+    for (let i = 0; i < unlockedBefore.length; i++) {
+      if (unlockedBefore[i] !== unlockedAfter[i] && unlockedAfter[i] === true) {
+        notify({
+          message: `You can now ${taskData[i].taskName} on the ${taskData[i].category} tab.`,
+        });
+        console.log(taskData[i].taskName + " unlocked!");
+      }
+    }
     if (firstTimeCompleteFunction) firstTimeCompleteFunction();
   }
-  if (resultItemsLost && !requirementsMet(resultItemsLost)) {
+  if (
+    resultItemsLost &&
+    !requirementsMet(resultItemsLost) &&
+    !taskData[task.index].oneTimeOnly
+  ) {
     //TASK COMPLETED, but can't start again due to insufficient items
-    //TODO probably show some kind of error notification.
+    notify({
+      title: "You can't do that!",
+      message: `You don't have the required items to do ${
+        taskData[task.index].taskName
+      } again. It has been cancelled.`,
+      type: "danger",
+    });
     store.dispatch(modifyUnlockedTask({ ...task, active: false }));
   }
 };
@@ -141,4 +166,23 @@ export const getFillTime = (task) => {
 
 export const taskIsCompleted = (taskIndex) => {
   return store.getState().gameState.completedTasks.includes(taskIndex);
+};
+
+export const notify = ({
+  title = "Content unlocked",
+  message,
+  duration = 5000,
+  type = "success",
+}) => {
+  notifStore.addNotification({
+    title,
+    message,
+    type,
+    insert: "bottom",
+    container: "bottom-center",
+    dismiss: {
+      duration,
+      onScreen: true,
+    },
+  });
 };

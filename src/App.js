@@ -14,6 +14,9 @@ import { timerInterval } from "./utils/globalVariables";
 import { saveState, deleteState } from "./utils/localStorage";
 import taskCategories from "./data/taskCategories.json";
 
+import ReactNotification from "react-notifications-component";
+import "react-notifications-component/dist/theme.css";
+
 function AppWrapper() {
   return (
     <Provider store={store}>
@@ -82,6 +85,7 @@ function App() {
 
   return (
     <div className="App" style={appStyles}>
+      <ReactNotification />
       <Navigation></Navigation>
       {visibleTasks.length > 0 ? (
         visibleTasks

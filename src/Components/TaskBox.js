@@ -12,6 +12,7 @@ import {
   getFillTime,
 } from "../utils/taskFunctions";
 import { timerInterval } from "../utils/globalVariables";
+import { notify } from "../utils/taskFunctions";
 
 /* PROPERTIES:
 taskName: Name of the task as it should be displayed in the box
@@ -69,8 +70,6 @@ const TaskBox = (props) => {
           timeToFill: thisTask.timeToFill / nextUpgradeLevel,
         })
       );
-    } else {
-      //TODO probably show some kind of error notification.
     }
   };
 
@@ -78,20 +77,33 @@ const TaskBox = (props) => {
     let active = thisTask.active;
     if (!active) {
       if (resultItemsLost && !requirementsMet(resultItemsLost)) {
-        //TODO show insufficient items notification.
-        console.log("Insufficient materials.");
+        notify({
+          title: "You can't do that!",
+          message: `You don't have the required items for ${
+            taskData[thisTask.index].taskName
+          }.`,
+          type: "danger",
+        });
         return;
       }
       let activeTasks = unlockedTasks.filter((task) => task.active);
       if (activeTasks && activeTasks.length >= maxTasks) {
-        //TODO show can't do any more tasks notification.
+        //TODO make this say you can only do one thing at a time if you haven't unlocked the ability to do more and add a better message for if you have
+        notify({
+          title: "You can't do that!",
+          message: `You can't do any more tasks at one time. Click a task to stop doing it.`,
+          type: "danger",
+        });
         console.log("Can't do any more tasks.");
         return;
       }
 
       if (thisTask.limit === 0) {
-        //TODO show can't do any more of this task notification.
-        console.log("Limit is at 0.");
+        notify({
+          title: "You can't do that!",
+          message: `There aren't any more.`,
+          type: "danger",
+        });
         return;
       }
     }
