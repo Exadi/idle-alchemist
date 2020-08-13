@@ -84,6 +84,7 @@ const completeTask = (task) => {
       if (unlockedBefore[i] !== unlockedAfter[i] && unlockedAfter[i] === true) {
         notify({
           message: `You can now ${taskData[i].taskName} on the ${taskData[i].category} tab.`,
+          duration: 0,
         });
         console.log(taskData[i].taskName + " unlocked!");
       }
