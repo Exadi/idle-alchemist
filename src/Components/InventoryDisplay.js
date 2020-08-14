@@ -20,7 +20,11 @@ const InventoryDisplay = (props) => {
       {inventory.items.map((item, idx) => {
         return (
           <div key={idx} style={itemStyles}>
-            {itemData[item.id].name} count {item.count}
+            {`${item.count} ${
+              item.count !== 1
+                ? itemData[item.id].plural
+                : itemData[item.id].name
+            }`}
           </div>
         );
       })}

@@ -15,7 +15,7 @@ const taskData = [
     ...defaults,
     bgColor: "#fff",
     fillColor: "#00ddff",
-    taskName: `Harvest ${itemData[0].name}`,
+    taskName: `Harvest ${itemData[0].plural}`,
     timeToFill: 2000,
     upgradeable: true,
     upgradeItems: [{ id: 0, count: 1 }],
@@ -27,7 +27,7 @@ const taskData = [
   //1
   {
     ...defaults,
-    taskName: `Process ${itemData[0].name}`,
+    taskName: `Process ${itemData[0].plural}`,
     upgradeable: true,
     upgradeItems: [
       { id: 0, count: 1 },
@@ -47,7 +47,7 @@ const taskData = [
   //2 - Craft ironflower tea
   {
     ...defaults,
-    taskName: `Craft ${itemData[3].name}`,
+    taskName: `Craft ${itemData[3].plural}`,
     upgradeable: true,
     upgradeItems: [
       { id: 0, count: 1 },
@@ -66,7 +66,7 @@ const taskData = [
   //3
   {
     ...defaults,
-    taskName: `Gather ${itemData[4].name}`,
+    taskName: `Gather ${itemData[4].plural}`,
     category: taskCategories.gather,
     resultItemsGained: [{ id: 4, count: 1 }],
     upgradeable: false,
@@ -76,7 +76,7 @@ const taskData = [
   //4
   {
     ...defaults,
-    taskName: `Gather ${itemData[5].name}`,
+    taskName: `Gather ${itemData[5].plural}`,
     resultItemsGained: [{ id: 5, count: 1 }],
     category: taskCategories.gather,
     upgradeable: false,
