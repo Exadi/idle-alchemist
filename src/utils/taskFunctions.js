@@ -136,19 +136,22 @@ export const requirementsMet = (array, multiplier = 1) => {
 
 export const upgradeCostDisplay = (task) => {
   let array = taskData[task.index].upgradeItems;
-  return arrayToString(array, getUpgradeCost(task));
+  return costArrayToString(array, getUpgradeCost(task));
 };
 
 export const costDisplay = (task) => {
   let array = taskData[task.index].resultItemsLost;
-  return arrayToString(array);
+  return costArrayToString(array);
 };
 
-const arrayToString = (array, multiplier = 1) => {
+const costArrayToString = (array, multiplier = 1) => {
   let str = "";
   let index = 0;
   array.forEach((element) => {
-    str += itemData[element.id].name + "*" + element.count * multiplier;
+    let count = element.count * multiplier;
+    str += `${count} ${
+      count !== 1 ? itemData[element.id].plural : itemData[element.id].name
+    }`;
     if (index < array.length - 1) {
       str += ", ";
     }
