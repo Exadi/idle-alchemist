@@ -5,7 +5,10 @@
     "bgSecondary": "#1c2025",
     "textPrimary": "#fff",
     "textSecondary": "#ddd",
-    "gradientPrimary": "linear-gradient(90deg, rgba(39,112,35,1) 0%, rgba(6,226,105,1) 100%)"
+    "textNegative": "#f55",
+    "textPositive": "#5f5",
+    "gradientPrimary": "linear-gradient(90deg, rgba(39,112,35,1) 0%, rgba(6,226,105,1) 100%)",
+    "textShadow": "-1px -1px 0 #000, 1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000"
   },
   {
     "name": "Blue Theme",

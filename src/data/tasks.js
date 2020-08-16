@@ -30,6 +30,8 @@ const taskData = [
   {
     ...defaults,
     taskName: `Harvest ${itemData[0].plural}`,
+    description:
+      "The seeds of this magical flower contain a metal that is easy to work with.",
     category: taskCategories.gather,
     fillSpeedFunction: () => 1 / 2,
     resultItemsGained: [{ id: 0, count: 1 }],
@@ -51,14 +53,11 @@ const taskData = [
     ...defaults,
     taskName: `Craft ${itemData[3].plural}`,
     description:
-      "Brews a refreshing cup of tea. Consumed immediately, granting 1 mana.",
+      "Brew a refreshing cup of tea. Consumed immediately, granting 1 mana.",
     category: taskCategories.craft,
     fillSpeedFunction: () => 1 / 30,
     resultItemsGained: [{ id: 3, count: 1 }],
-    resultItemsLost: [
-      { id: 1, count: 1 },
-      { id: 2, count: 1 },
-    ],
+    resultItemsLost: [{ id: 1, count: 1 }],
     unlocked: () => store.getState().gameState.completedTasks.includes(1),
   },
   //3

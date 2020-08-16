@@ -18,8 +18,9 @@ import { notify } from "../utils/taskFunctions";
 
 import ReactTooltip from "react-tooltip";
 import HelpIcon from "@material-ui/icons/Help";
-import RemoveIcon from "@material-ui/icons/Remove";
-import AddIcon from "@material-ui/icons/Add";
+import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
+import AddOutlinedIcon from "@material-ui/icons/AddOutlined";
+import TimerIcon from "@material-ui/icons/Timer";
 
 const TaskBox = (props) => {
   const dispatch = useDispatch();
@@ -112,8 +113,8 @@ const TaskBox = (props) => {
   };
 
   const containerStyles = {
-    height: "10vw",
-    width: "30vw",
+    height: "140px",
+    width: "410px",
     backgroundColor: theme.bgSecondary,
     color: theme.textPrimary,
     borderRadius: 10,
@@ -144,6 +145,7 @@ const TaskBox = (props) => {
     position: "relative",
     zIndex: "3",
     padding: "10px",
+    textShadow: theme.textShadow,
   };
 
   const description = taskData[thisTask.index].description;
@@ -152,12 +154,27 @@ const TaskBox = (props) => {
     top: "0",
     right: "0",
   };
+
+  const costGainAreaStyles = {
+    height: "48px",
+  };
   const costStyles = {
-    color: "#f55",
+    color: theme.textNegative,
   };
 
   const gainStyles = {
-    color: "#5f5",
+    color: theme.textPositive,
+  };
+
+  const limitStyles = { position: "absolute" };
+  const timeStyles = {
+    border: `1px solid ${theme.textPrimary}`,
+    backgroundColor: `${theme.bgPrimary}`,
+    width: "max-content",
+    padding: "2px",
+    position: "absolute",
+    right: "2px",
+    bottom: "0",
   };
 
   return (
@@ -188,20 +205,36 @@ const TaskBox = (props) => {
               Upgrade: {upgradeCostDisplay(thisTask)}
             </button>
           ) : null}
-          {resultItemsLost ? (
-            <div style={costStyles}>
-              <RemoveIcon style={{ verticalAlign: "bottom" }} />
-              {costDisplay(thisTask)}
-            </div>
-          ) : null}
-          {resultItemsGained ? (
-            <div style={gainStyles}>
-              <AddIcon style={{ verticalAlign: "bottom" }} />
-              {gainDisplay(thisTask)}
-            </div>
-          ) : null}
-          {speedDisplay(thisTask)}
-          <div>
+
+          <div style={costGainAreaStyles}>
+            {resultItemsLost ? (
+              <div style={costStyles}>
+                <RemoveOutlinedIcon
+                  titleAccess="Lose"
+                  style={{ verticalAlign: "bottom" }}
+                />
+                {costDisplay(thisTask)}
+              </div>
+            ) : null}
+            {resultItemsGained ? (
+              <div style={gainStyles}>
+                <AddOutlinedIcon
+                  titleAccess="Gain"
+                  style={{ verticalAlign: "bottom" }}
+                />
+                {gainDisplay(thisTask)}
+              </div>
+            ) : null}
+          </div>
+
+          <div style={timeStyles}>
+            <TimerIcon
+              style={{ verticalAlign: "bottom" }}
+              titleAccess="Time to complete:"
+            />{" "}
+            {speedDisplay(thisTask)}
+          </div>
+          <div style={limitStyles}>
             {oneTimeOnly ? "One time only." : null}
             {thisTask.limit ? `${thisTask.limit} remaining.` : null}
           </div>
