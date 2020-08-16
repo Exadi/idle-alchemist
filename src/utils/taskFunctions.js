@@ -136,12 +136,17 @@ export const requirementsMet = (array, multiplier = 1) => {
 
 export const upgradeCostDisplay = (task) => {
   let array = taskData[task.index].upgradeItems;
-  return costArrayToString(array, getUpgradeCost(task));
+  return itemArrayToString(array, getUpgradeCost(task));
 };
 
 export const costDisplay = (task) => {
   let array = taskData[task.index].resultItemsLost;
-  return costArrayToString(array);
+  return itemArrayToString(array);
+};
+
+export const gainDisplay = (task) => {
+  let array = taskData[task.index].resultItemsGained;
+  return itemArrayToString(array);
 };
 
 export const speedDisplay = (task) => {
@@ -178,7 +183,7 @@ export const timeRemainingDisplay = (task) => {
     }:${seconds < 10 ? "0" + seconds.toFixed(0) : seconds.toFixed(0)}`;
 };
 
-const costArrayToString = (array, multiplier = 1) => {
+const itemArrayToString = (array, multiplier = 1) => {
   let str = "";
   let index = 0;
   array.forEach((element) => {

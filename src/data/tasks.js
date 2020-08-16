@@ -50,6 +50,8 @@ const taskData = [
   {
     ...defaults,
     taskName: `Craft ${itemData[3].plural}`,
+    description:
+      "Brews a refreshing cup of tea. Consumed immediately, granting 1 mana.",
     category: taskCategories.craft,
     fillSpeedFunction: () => 1 / 30,
     resultItemsGained: [{ id: 3, count: 1 }],
@@ -81,6 +83,8 @@ const taskData = [
   {
     ...defaults,
     taskName: `Build Campfire`,
+    description:
+      "A campfire will give you a place to rest and enough heat to do some basic processing.",
     category: taskCategories.craft,
     resultItemsLost: [
       { id: 4, count: 10 },

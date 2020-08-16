@@ -8,12 +8,18 @@ import {
   requirementsMet,
   upgradeCostDisplay,
   costDisplay,
+  gainDisplay,
   getUpgradeCost,
   getFillSpeed,
   speedDisplay,
 } from "../utils/taskFunctions";
 import { timerInterval } from "../utils/globalVariables";
 import { notify } from "../utils/taskFunctions";
+
+import ReactTooltip from "react-tooltip";
+import HelpIcon from "@material-ui/icons/Help";
+import RemoveIcon from "@material-ui/icons/Remove";
+import AddIcon from "@material-ui/icons/Add";
 
 const TaskBox = (props) => {
   const dispatch = useDispatch();
@@ -44,6 +50,7 @@ const TaskBox = (props) => {
     upgradeable,
     upgradeItems,
     resultItemsLost,
+    resultItemsGained,
     oneTimeOnly,
   } = taskData[thisTask.index];
 
@@ -113,6 +120,8 @@ const TaskBox = (props) => {
     border: "1px solid black",
     position: "relative",
     zIndex: "1",
+    boxSizing: "border-box",
+    userSelect: "none",
   };
 
   const fillerStyles = {
@@ -134,14 +143,38 @@ const TaskBox = (props) => {
   const contentStyles = {
     position: "relative",
     zIndex: "3",
+    padding: "10px",
+  };
+
+  const description = taskData[thisTask.index].description;
+  const helpIconStyles = {
+    position: "absolute",
+    top: "0",
+    right: "0",
+  };
+  const costStyles = {
+    color: "#f55",
+  };
+
+  const gainStyles = {
+    color: "#5f5",
   };
 
   return (
     <>
+      <ReactTooltip />
       <div onClick={toggle} style={containerStyles}>
         <div style={fillerStyles}></div>
         <div style={contentStyles}>
           <h2>{taskName}</h2>
+          {description ? (
+            <div
+              data-tip={taskData[thisTask.index].description}
+              style={helpIconStyles}
+            >
+              <HelpIcon />
+            </div>
+          ) : null}
           <br />
           {upgradeable ? (
             <button
@@ -155,7 +188,18 @@ const TaskBox = (props) => {
               Upgrade: {upgradeCostDisplay(thisTask)}
             </button>
           ) : null}
-          {resultItemsLost ? "Costs " + costDisplay(thisTask) : null}
+          {resultItemsLost ? (
+            <div style={costStyles}>
+              <RemoveIcon style={{ verticalAlign: "bottom" }} />
+              {costDisplay(thisTask)}
+            </div>
+          ) : null}
+          {resultItemsGained ? (
+            <div style={gainStyles}>
+              <AddIcon style={{ verticalAlign: "bottom" }} />
+              {gainDisplay(thisTask)}
+            </div>
+          ) : null}
           {speedDisplay(thisTask)}
           <div>
             {oneTimeOnly ? "One time only." : null}
