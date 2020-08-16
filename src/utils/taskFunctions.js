@@ -46,7 +46,9 @@ const completeTask = (task) => {
         message: `You don't have the required items to finish ${task.taskName}. It has been cancelled.`,
         type: "danger",
       });
-      store.dispatch(modifyUnlockedTask({ ...task, active: false }));
+      store.dispatch(
+        modifyUnlockedTask({ ...task, active: false, completed: 0 })
+      );
       return;
     }
     resultItemsLost.forEach((item) =>
@@ -105,7 +107,9 @@ const completeTask = (task) => {
       } again. It has been cancelled.`,
       type: "danger",
     });
-    store.dispatch(modifyUnlockedTask({ ...task, active: false }));
+    store.dispatch(
+      modifyUnlockedTask({ ...task, active: false, completed: 0 })
+    );
   }
 };
 
