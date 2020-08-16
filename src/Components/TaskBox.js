@@ -9,20 +9,12 @@ import {
   upgradeCostDisplay,
   costDisplay,
   getUpgradeCost,
-  getFillTime,
+  getFillSpeed,
+  speedDisplay,
 } from "../utils/taskFunctions";
 import { timerInterval } from "../utils/globalVariables";
 import { notify } from "../utils/taskFunctions";
 
-/* PROPERTIES:
-taskName: Name of the task as it should be displayed in the box
-timeToFill: time in milliseconds to complete this task at level 0 //TODO replace with function of level and replace with speed instead of time so I can do upgrades like "increase all task speed by 20%" more easily
-upgradeable: whether you can spend resources to upgrade this task (controls display of upgrade button)
-upgradeItems: the item id required to upgrade
-upgradeCostFunction: a function of level that controls how much the next upgrade costs
-resultItemsGained: which item will be added (id and count) when this task finishes
-resultItemsLost: which item will be removed (id and count) when this task finishes
-*/
 const TaskBox = (props) => {
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -127,10 +119,7 @@ const TaskBox = (props) => {
     height: "100%",
     width: `${
       thisTask.active
-        ? Math.min(
-            (thisTask.completed + timerInterval / getFillTime(thisTask)) * 100,
-            100
-          )
+        ? Math.min((thisTask.completed + getFillSpeed(thisTask)) * 100, 100)
         : 0
     }%`,
     backgroundImage: theme.gradientPrimary,
@@ -167,6 +156,7 @@ const TaskBox = (props) => {
             </button>
           ) : null}
           {resultItemsLost ? "Costs " + costDisplay(thisTask) : null}
+          {speedDisplay(thisTask)}
           <div>
             {oneTimeOnly ? "One time only." : null}
             {thisTask.limit ? `${thisTask.limit} remaining.` : null}

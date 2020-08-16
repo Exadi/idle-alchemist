@@ -11,13 +11,13 @@ import { store as notifStore } from "react-notifications-component";
 
 export const tick = (task) => {
   if (task.active) {
-    if (task.completed + timerInterval / getFillTime(task) >= 1) {
+    if (task.completed + getFillSpeed(task) >= 1) {
       completeTask(task);
     } else {
       store.dispatch(
         modifyUnlockedTask({
           ...task,
-          completed: task.completed + timerInterval / getFillTime(task),
+          completed: task.completed + getFillSpeed(task),
         })
       );
     }
@@ -35,7 +35,7 @@ const completeTask = (task) => {
   let { limit } = task;
   //don't complete the task more times than the remaining limit
   let timesCompleted = Math.min(
-    Math.round(task.completed + timerInterval / getFillTime(task)),
+    Math.round(task.completed + getFillSpeed(task)),
     limit || 1
   );
 
@@ -144,6 +144,40 @@ export const costDisplay = (task) => {
   return costArrayToString(array);
 };
 
+export const speedDisplay = (task) => {
+  let fillSpeed = (getFillSpeed(task) / (timerInterval / 1000)) * 100;
+  if (fillSpeed >= 100) {
+    fillSpeed /= 100;
+    return `Speed: ${fillSpeed.toFixed(2)}/s`;
+  } else {
+    return timeRemainingDisplay(task);
+  }
+};
+
+export const timeRemainingDisplay = (task) => {
+  let fillSpeed = (getFillSpeed(task) / (timerInterval / 1000)) * 100;
+  let completedPercent = (task.completed || 0) * 100;
+  let incompletePercent = 100 - completedPercent;
+
+  let timeRemaining = incompletePercent / fillSpeed;
+
+  let hours = Math.floor(timeRemaining / 3600);
+  let minutes = Math.floor((timeRemaining - hours * 3600) / 60);
+  let seconds = timeRemaining - hours * 3600 - minutes * 60;
+
+  if (hours == 0 && minutes <= 1 && timeRemaining <= 60) {
+    //don't turn 60s into 1 minute
+    return `${timeRemaining.toFixed(2)}s`;
+  } else if (hours == 0) {
+    return `${minutes < 10 ? "0" + minutes : minutes}:${
+      seconds < 10 ? "0" + seconds.toFixed(0) : seconds.toFixed(0)
+    }`;
+  } else
+    return `${hours < 10 ? "0" + hours : hours}:${
+      minutes < 10 ? "0" + minutes : minutes
+    }:${seconds < 10 ? "0" + seconds.toFixed(0) : seconds.toFixed(0)}`;
+};
+
 const costArrayToString = (array, multiplier = 1) => {
   let str = "";
   let index = 0;
@@ -165,8 +199,13 @@ export const getUpgradeCost = (task) => {
     return taskData[task.index].upgradeCostFunction(task.upgradeLevel || 0);
 };
 
-export const getFillTime = (task) => {
-  return taskData[task.index].fillTimeFunction(task.upgradeLevel || 0);
+export const getFillSpeed = (task) => {
+  //TODO apply upgrades from global modifiers etc. here
+  //multiply by timerInterval/1000 to make it progress per second
+  return (
+    taskData[task.index].fillSpeedFunction(task.upgradeLevel || 0) *
+    (timerInterval / 1000)
+  );
 };
 
 export const taskIsCompleted = (taskIndex) => {

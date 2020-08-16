@@ -2,9 +2,25 @@ import itemData from "./items";
 import store from "../store";
 import taskCategories from "./taskCategories.json";
 
+/* PROPERTIES:
+taskName: Name of the task as it should be displayed in the box
+category: Which tab this task will be displayed under (may interact with upgrades later)
+fillSpeedFunction: Returns progress/second, where 1 is complete. e.g. 1/60 means it will take 60 seconds to complete
+upgradeable: whether you can spend resources to upgrade this task (controls display of upgrade button)
+upgradeItems: the item id required to upgrade
+upgradeCostFunction: a function of level that controls how much the next upgrade costs (multiplies the upgradeItems by the result)
+resultItemsGained: which item will be added (id and count) when this task finishes
+resultItemsLost: which item will be removed (id and count) when this task finishes
+unlocked: Function that determines whether this task is unlocked.
+oneTimeOnly: true if this task can only ever be done once.
+limit: How many times this task can be done.
+limitRecoverable: set to true if there are ways to recover the above limit. Otherwise, the task will disappear forever when limit is depleted.
+firstTimeCompleteFunction: a function that executes when completing this task for the first time. Not sure if this will be used now that tasks unlock in a different way.
+*/
+
 const defaults = {
   upgradeCostFunction: (level) => Math.pow(2, level),
-  fillTimeFunction: (level) => 2000 / (level + 1),
+  fillSpeedFunction: (level) => 0.5 + 0.005 * level,
   unlocked: () => true,
   firstTimeCompleteFunction: () => {},
 };
@@ -13,54 +29,34 @@ const taskData = [
   //0
   {
     ...defaults,
-    bgColor: "#fff",
-    fillColor: "#00ddff",
     taskName: `Harvest ${itemData[0].plural}`,
-    timeToFill: 2000,
-    upgradeable: true,
-    upgradeItems: [{ id: 0, count: 1 }],
-    upgradeCostFunction: (level) => Math.pow(2, level),
-    fillTimeFunction: (level) => 2000 / (level + 1),
-    resultItemsGained: [{ id: 0, count: 1 }],
     category: taskCategories.gather,
+    fillSpeedFunction: () => 1 / 2,
+    resultItemsGained: [{ id: 0, count: 1 }],
   },
   //1
   {
     ...defaults,
     taskName: `Process ${itemData[0].plural}`,
-    upgradeable: true,
-    upgradeItems: [
-      { id: 0, count: 1 },
-      { id: 1, count: 2 },
-    ],
-    upgradeCostFunction: (level) => Math.pow(2, level),
-    fillTimeFunction: (level) => 2000 / (level + 1),
+    category: taskCategories.process,
     resultItemsGained: [
       { id: 1, count: 1 },
       { id: 2, count: 1 },
     ],
     resultItemsLost: [{ id: 0, count: 1 }],
-    category: taskCategories.process,
     unlocked: () => store.getState().gameState.completedTasks.includes(5),
-    firstTimeCompleteFunction: () => {},
   },
   //2 - Craft ironflower tea
   {
     ...defaults,
     taskName: `Craft ${itemData[3].plural}`,
-    upgradeable: true,
-    upgradeItems: [
-      { id: 0, count: 1 },
-      { id: 1, count: 2 },
-    ],
-    upgradeCostFunction: (level) => Math.pow(2, level),
-    fillTimeFunction: (level) => 2000 / (level + 1),
+    category: taskCategories.craft,
+    fillSpeedFunction: () => 1 / 30,
     resultItemsGained: [{ id: 3, count: 1 }],
     resultItemsLost: [
       { id: 1, count: 1 },
       { id: 2, count: 1 },
     ],
-    category: taskCategories.craft,
     unlocked: () => store.getState().gameState.completedTasks.includes(1),
   },
   //3
@@ -69,18 +65,16 @@ const taskData = [
     taskName: `Gather ${itemData[4].plural}`,
     category: taskCategories.gather,
     resultItemsGained: [{ id: 4, count: 1 }],
-    upgradeable: false,
-    fillTimeFunction: (level) => 4000,
+    fillSpeedFunction: () => 1 / 4,
     limit: 10,
   },
   //4
   {
     ...defaults,
     taskName: `Gather ${itemData[5].plural}`,
-    resultItemsGained: [{ id: 5, count: 1 }],
     category: taskCategories.gather,
-    upgradeable: false,
-    fillTimeFunction: (level) => 4000,
+    resultItemsGained: [{ id: 5, count: 1 }],
+    fillSpeedFunction: () => 1 / 4,
     limit: 10,
   },
   //5
@@ -88,12 +82,11 @@ const taskData = [
     ...defaults,
     taskName: `Build Campfire`,
     category: taskCategories.craft,
-    upgradeable: false,
     resultItemsLost: [
       { id: 4, count: 10 },
       { id: 5, count: 10 },
     ],
-    fillTimeFunction: () => 60000,
+    fillSpeedFunction: () => 1 / 60,
     oneTimeOnly: true,
     unlocked: () =>
       store.getState().gameState.completedTasks.includes(3) &&
