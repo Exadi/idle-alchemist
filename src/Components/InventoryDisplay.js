@@ -18,7 +18,7 @@ const InventoryDisplay = (props) => {
   return (
     <div style={inventoryStyles}>
       {inventory.items.map((item, idx) => {
-        return (
+        return item.count !== 0 ? (
           <div key={idx} style={itemStyles}>
             {`${item.count} ${
               item.count !== 1
@@ -26,7 +26,7 @@ const InventoryDisplay = (props) => {
                 : itemData[item.id].name
             }`}
           </div>
-        );
+        ) : null;
       })}
     </div>
   );
