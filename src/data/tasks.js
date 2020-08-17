@@ -24,7 +24,7 @@ const defaults = {
   unlocked: () => true,
   firstTimeCompleteFunction: () => {},
 };
-
+const completedTasks = store.getState().gameState.completedTasks;
 const taskData = [
   //0
   {
@@ -46,19 +46,19 @@ const taskData = [
       { id: 2, count: 1 },
     ],
     resultItemsLost: [{ id: 0, count: 1 }],
-    unlocked: () => store.getState().gameState.completedTasks.includes(5),
+    unlocked: () => completedTasks.includes(5),
   },
-  //2 - Craft ironflower tea
+  //2
   {
     ...defaults,
-    taskName: `Craft ${itemData[3].plural}`,
+    taskName: `Brew Ironflower Tea`,
     description:
       "Brew a refreshing cup of tea. Consumed immediately, granting 1 mana.",
     category: taskCategories.craft,
     fillSpeedFunction: () => 1 / 30,
-    resultItemsGained: [{ id: 3, count: 1 }],
+    resultItemsGained: [{ mana: true, count: 1 }],
     resultItemsLost: [{ id: 1, count: 1 }],
-    unlocked: () => store.getState().gameState.completedTasks.includes(1),
+    unlocked: () => completedTasks.includes(1),
   },
   //3
   {
@@ -91,9 +91,16 @@ const taskData = [
     ],
     fillSpeedFunction: () => 1 / 60,
     oneTimeOnly: true,
-    unlocked: () =>
-      store.getState().gameState.completedTasks.includes(3) &&
-      store.getState().gameState.completedTasks.includes(4),
+    unlocked: () => completedTasks.includes(3) && completedTasks.includes(4),
+  },
+  //6
+  {
+    ...defaults,
+    taskName: `(TEST) Waste Mana`,
+    category: taskCategories.magic,
+    resultItemsLost: [{ mana: true, count: 1 }],
+    fillSpeedFunction: () => 1 / 2,
+    unlocked: () => completedTasks.includes(2),
   },
 ];
 

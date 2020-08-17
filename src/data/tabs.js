@@ -28,6 +28,11 @@ let tabsData = [
     name: taskCategories.craft,
     unlocked: () => checkUnlockedInCategory(taskCategories.craft),
   },
+  ,
+  {
+    name: taskCategories.magic,
+    unlocked: () => checkUnlockedInCategory(taskCategories.magic),
+  },
 ];
 
 export default tabsData;

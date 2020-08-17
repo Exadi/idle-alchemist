@@ -5,6 +5,8 @@ import { addItem, removeItem, setItemCount } from "../actions/inventoryActions";
 import {
   completeTask as completeTaskRedux,
   modifyUnlockedTask,
+  addMana,
+  removeMana,
 } from "../actions/gameStateActions";
 import { timerInterval } from "../utils/globalVariables";
 import { store as notifStore } from "react-notifications-component";
@@ -51,24 +53,34 @@ const completeTask = (task) => {
       );
       return;
     }
-    resultItemsLost.forEach((item) =>
-      store.dispatch(
-        removeItem({
-          id: item.id,
-          count: item.count * timesCompleted,
-        })
-      )
-    );
+    resultItemsLost.forEach((item) => {
+      if (item.mana) {
+        //remove mana
+        store.dispatch(removeMana(item.count));
+      } else {
+        //remove item
+        store.dispatch(
+          removeItem({
+            id: item.id,
+            count: item.count * timesCompleted,
+          })
+        );
+      }
+    });
   }
   if (resultItemsGained) {
-    resultItemsGained.forEach((item) =>
-      store.dispatch(
-        addItem({
-          id: item.id,
-          count: item.count * timesCompleted,
-        })
-      )
-    );
+    resultItemsGained.forEach((item) => {
+      if (item.mana) {
+        store.dispatch(addMana(item.count));
+      } else {
+        store.dispatch(
+          addItem({
+            id: item.id,
+            count: item.count * timesCompleted,
+          })
+        );
+      }
+    });
   }
   const newLimit = limit !== undefined ? limit - timesCompleted : undefined;
   const active = (newLimit === undefined || newLimit > 0) && !oneTimeOnly;
@@ -118,6 +130,12 @@ export const requirementsMet = (array, multiplier = 1) => {
   let reqMet = true;
   //for each item required for upgrading
   array.forEach((element) => {
+    if (element.mana) {
+      if (store.getState().gameState.mana < element.count) {
+        reqMet = false;
+      }
+      return;
+    }
     //try to find the item in inventory
     let foundItem = inventory.items.find((x) => x.id === element.id);
     if (!foundItem) {
@@ -192,9 +210,13 @@ const itemArrayToString = (array, multiplier = 1) => {
   let index = 0;
   array.forEach((element) => {
     let count = element.count * multiplier;
-    str += `${count} ${
-      count !== 1 ? itemData[element.id].plural : itemData[element.id].name
-    }`;
+    if (element.mana) {
+      str += `${count} Mana`;
+    } else {
+      str += `${count} ${
+        count !== 1 ? itemData[element.id].plural : itemData[element.id].name
+      }`;
+    }
     if (index < array.length - 1) {
       str += ", ";
     }

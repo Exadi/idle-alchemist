@@ -4,6 +4,8 @@ import {
   COMPLETE_TASK,
   MODIFY_UNLOCKED_TASK,
   MODIFY_ALL_UNLOCKED_TASKS,
+  ADD_MANA,
+  REMOVE_MANA,
 } from "../actions/types";
 import taskCategories from "../data/taskCategories.json";
 
@@ -12,6 +14,7 @@ const initialState = {
   selectedTab: taskCategories.gather,
   completedTasks: [],
   maxTasks: 1,
+  mana: 0,
 };
 export default function (state = initialState, action) {
   let unlockedTasks = [...state.unlockedTasks];
@@ -53,6 +56,16 @@ export default function (state = initialState, action) {
       return {
         ...state,
         selectedTab: action.payload,
+      };
+    case ADD_MANA:
+      return {
+        ...state,
+        mana: (state.mana || 0) + action.payload,
+      };
+    case REMOVE_MANA:
+      return {
+        ...state,
+        mana: (state.mana || 0) - action.payload,
       };
     default:
       return state;
