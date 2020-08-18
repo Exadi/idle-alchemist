@@ -10,14 +10,6 @@ export default function Navigation() {
   const theme = useTheme();
   const selectedTab = useSelector((state) => state.gameState.selectedTab);
 
-  const navigationStyles = {
-    color: theme.textPrimary,
-    backgroundColor: theme.bgSecondary,
-    borderBottom: `1px solid black`,
-    marginBottom: "10px",
-    height: "30px",
-  };
-
   const tabStyles = {
     backgroundColor: theme.bgPrimary,
     color: theme.textSecondary,
@@ -31,7 +23,7 @@ export default function Navigation() {
     borderBottom: `1px solid ${theme.textPrimary}`,
   };
   return (
-    <div style={navigationStyles}>
+    <span>
       {tabsData.map((item, idx) => {
         return item.unlocked() ? (
           <a
@@ -43,6 +35,6 @@ export default function Navigation() {
           </a>
         ) : null;
       })}
-    </div>
+    </span>
   );
 }

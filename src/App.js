@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import "./App.css";
 import TaskBox from "./Components/TaskBox";
 import InventoryDisplay from "./Components/InventoryDisplay";
-import Navigation from "./Components/Navigation";
+import TopBar from "./Components/TopBar";
 
 import { Provider, useSelector } from "react-redux";
 import store from "./store";
@@ -31,7 +31,6 @@ function App() {
   const theme = useTheme();
   const unlockedTasks = useSelector((state) => state.gameState.unlockedTasks);
   const tab = useSelector((state) => state.gameState.selectedTab);
-  const mana = useSelector((state) => state.gameState.mana);
   //only here to cause re-render of the component when a task runs out. Otherwise, its box remains visible until clicked again.
   const completedTasks = useSelector((state) => state.gameState.completedTasks);
 
@@ -87,7 +86,7 @@ function App() {
   return (
     <div className="App" style={appStyles}>
       <ReactNotification />
-      <Navigation></Navigation>
+      <TopBar></TopBar>
       {visibleTasks.length > 0 ? (
         visibleTasks
       ) : Object.values(taskCategories).indexOf(tab) >= 0 ? (
@@ -105,7 +104,6 @@ function App() {
           Delete Save
         </button>
       }
-      {`${mana || 0} Mana`}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 [
   { "id": 0, "name": "Ironflower", "plural": "Ironflowers" },
   { "id": 1, "name": "Ironflower Leaf", "plural": "Ironflower Leaves" },
-  { "id": 2, "name": "Iron", "plural": "Iron" },
+  { "id": 2, "name": "Floweriron", "plural": "Floweriron" },
   { "id": 3, "name": "Ironflower Tea", "plural": "Ironflower Tea" },
   { "id": 4, "name": "Stick", "plural": "Sticks" },
   { "id": 5, "name": "Stone", "plural": "Stones" }
