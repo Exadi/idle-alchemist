@@ -35,6 +35,9 @@ const completeTask = (task) => {
     oneTimeOnly,
   } = dbTask;
   let { limit } = task;
+  if (resultItemsGained) resultItemsGained = resultItemsGained();
+  if (resultItemsLost) resultItemsLost = resultItemsLost();
+
   //don't complete the task more times than the remaining limit
   let timesCompleted = Math.min(
     Math.round(task.completed + getFillSpeed(task)),
@@ -45,7 +48,7 @@ const completeTask = (task) => {
     if (!requirementsMet(resultItemsLost)) {
       notify({
         title: "You can't do that!",
-        message: `You don't have the required items to finish ${task.taskName}. It has been cancelled.`,
+        message: `You don't have the required items to finish ${task.taskName()}. It has been cancelled.`,
         type: "danger",
       });
       store.dispatch(
@@ -98,10 +101,11 @@ const completeTask = (task) => {
       if (unlockedBefore[i] !== unlockedAfter[i] && unlockedAfter[i] === true) {
         notify({
           title: "Content unlocked",
-          message: `You can now ${taskData[i].taskName} on the ${taskData[i].category} tab.`,
+          message: `You can now ${taskData[i].taskName()} on the ${
+            taskData[i].category
+          } tab.`,
           dismiss: { duration: 0 },
         });
-        console.log(taskData[i].taskName + " unlocked!");
       }
     }
     if (firstTimeCompleteFunction) firstTimeCompleteFunction();
@@ -114,9 +118,9 @@ const completeTask = (task) => {
     //TASK COMPLETED, but can't start again due to insufficient items
     notify({
       title: "You can't do that!",
-      message: `You don't have the required items to do ${
-        taskData[task.index].taskName
-      } again. It has been cancelled.`,
+      message: `You don't have the required items to do ${taskData[
+        task.index
+      ].taskName()} again. It has been cancelled.`,
       type: "danger",
     });
     store.dispatch(
@@ -162,12 +166,12 @@ export const upgradeCostDisplay = (task) => {
 };
 
 export const costDisplay = (task) => {
-  let array = taskData[task.index].resultItemsLost;
+  let array = taskData[task.index].resultItemsLost();
   return itemArrayToString(array);
 };
 
 export const gainDisplay = (task) => {
-  let array = taskData[task.index].resultItemsGained;
+  let array = taskData[task.index].resultItemsGained();
   return itemArrayToString(array);
 };
 

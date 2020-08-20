@@ -75,13 +75,12 @@ const TaskBox = (props) => {
 
   const toggle = () => {
     let active = thisTask.active;
+    let taskName = taskData[thisTask.index].taskName();
     if (!active) {
-      if (resultItemsLost && !requirementsMet(resultItemsLost)) {
+      if (resultItemsLost && !requirementsMet(resultItemsLost())) {
         notify({
           title: "You can't do that!",
-          message: `You don't have the required items for ${
-            taskData[thisTask.index].taskName
-          }.`,
+          message: `You don't have the required items for ${taskName}.`,
           type: "danger",
         });
         return;
@@ -183,10 +182,10 @@ const TaskBox = (props) => {
       <div onClick={toggle} style={containerStyles}>
         <div style={fillerStyles}></div>
         <div style={contentStyles}>
-          <h2>{taskName}</h2>
+          <h2>{taskName()}</h2>
           {description ? (
             <div
-              data-tip={taskData[thisTask.index].description}
+              data-tip={taskData[thisTask.index].description()}
               style={helpIconStyles}
             >
               <HelpIcon />

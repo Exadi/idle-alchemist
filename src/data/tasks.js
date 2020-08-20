@@ -28,23 +28,23 @@ const taskData = [
   //0
   {
     ...defaults,
-    taskName: `Harvest ${itemData[0].plural}`,
-    description:
+    taskName: () => `Harvest ${itemData[0].plural}`,
+    description: () =>
       "The seeds of this magical flower contain a metal that is easy to work with.",
     category: taskCategories.gather,
     fillSpeedFunction: () => 1 / 2,
-    resultItemsGained: [{ id: 0, count: 1 }],
+    resultItemsGained: () => [{ id: 0, count: 1 }],
   },
   //1
   {
     ...defaults,
-    taskName: `Process ${itemData[0].plural}`,
+    taskName: () => `Process ${itemData[0].plural}`,
     category: taskCategories.process,
-    resultItemsGained: [
+    resultItemsGained: () => [
       { id: 1, count: 1 },
       { id: 2, count: 1 },
     ],
-    resultItemsLost: [{ id: 0, count: 1 }],
+    resultItemsLost: () => [{ id: 0, count: 1 }],
     unlocked: () => {
       let completedTasks = store.getState().gameState.completedTasks;
       return completedTasks.includes(5);
@@ -53,13 +53,32 @@ const taskData = [
   //2
   {
     ...defaults,
-    taskName: `Brew Ironflower Tea`,
-    description:
-      "Brew a refreshing cup of tea. Consumed immediately, granting 1 mana.",
+    taskName: () => {
+      let completedTasks = store.getState().gameState.completedTasks;
+      return completedTasks.includes(6)
+        ? "Bulk Brew Ironflower Tea"
+        : "Brew Ironflower Tea";
+    },
+    description: () => {
+      let completedTasks = store.getState().gameState.completedTasks;
+      return completedTasks.includes(6)
+        ? "Now that you have a cauldron, you can brew tea in bulk. Strangely, your body seems to have no limit to how much it can drink."
+        : "Brew a refreshing cup of tea. Consumed immediately, granting 1 mana.";
+    },
     category: taskCategories.craft,
     fillSpeedFunction: () => 1 / 30,
-    resultItemsGained: [{ mana: true, count: 1 }],
-    resultItemsLost: [{ id: 1, count: 1 }],
+    resultItemsGained: () => {
+      let completedTasks = store.getState().gameState.completedTasks;
+      return completedTasks.includes(6)
+        ? [{ mana: true, count: 10 }]
+        : [{ mana: true, count: 1 }];
+    },
+    resultItemsLost: () => {
+      let completedTasks = store.getState().gameState.completedTasks;
+      return completedTasks.includes(6)
+        ? [{ id: 1, count: 10 }]
+        : [{ id: 1, count: 1 }];
+    },
     unlocked: () => {
       let completedTasks = store.getState().gameState.completedTasks;
       return completedTasks.includes(1);
@@ -68,29 +87,29 @@ const taskData = [
   //3
   {
     ...defaults,
-    taskName: `Gather ${itemData[4].plural}`,
+    taskName: () => `Gather ${itemData[4].plural}`,
     category: taskCategories.gather,
-    resultItemsGained: [{ id: 4, count: 1 }],
+    resultItemsGained: () => [{ id: 4, count: 1 }],
     fillSpeedFunction: () => 1 / 4,
     limit: 10,
   },
   //4
   {
     ...defaults,
-    taskName: `Gather ${itemData[5].plural}`,
+    taskName: () => `Gather ${itemData[5].plural}`,
     category: taskCategories.gather,
-    resultItemsGained: [{ id: 5, count: 1 }],
+    resultItemsGained: () => [{ id: 5, count: 1 }],
     fillSpeedFunction: () => 1 / 4,
     limit: 10,
   },
   //5
   {
     ...defaults,
-    taskName: `Build Campfire`,
-    description:
+    taskName: () => `Build Campfire`,
+    description: () =>
       "A campfire will give you a place to rest and enough heat to do some basic processing.",
     category: taskCategories.craft,
-    resultItemsLost: [
+    resultItemsLost: () => [
       { id: 4, count: 10 },
       { id: 5, count: 10 },
     ],
@@ -104,13 +123,14 @@ const taskData = [
   //6
   {
     ...defaults,
-    taskName: `Craft Crude Cauldron`,
-    description: `Use mana to coerce ${itemData[2].name} into the shape of a cauldron.`,
+    taskName: () => `Craft Crude Cauldron`,
+    description: () =>
+      `Use mana to coerce ${itemData[2].name} into the shape of a cauldron.`,
     category: taskCategories.magic,
-    resultItemsLost: [
+    resultItemsLost: () => [
       {
         mana: true,
-        count: store.getState().gameState.completedTasks.includes(4) ? 10 : 20,
+        count: 10,
       },
       { id: 2, count: 10 },
     ],
