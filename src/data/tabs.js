@@ -1,5 +1,6 @@
 import taskData from "./tasks";
 import taskCategories from "./taskCategories.json";
+import store from "../store";
 
 const checkUnlockedInCategory = (category) => {
   return (
@@ -31,6 +32,13 @@ let tabsData = [
   {
     name: taskCategories.magic,
     unlocked: () => checkUnlockedInCategory(taskCategories.magic),
+  },
+  {
+    name: "Alchemy",
+    unlocked: () => {
+      let completedTasks = store.getState().gameState.completedTasks;
+      return completedTasks.includes(6);
+    },
   },
 ];
 

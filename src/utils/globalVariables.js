@@ -1,2 +1,2 @@
 export const timerInterval = 50;
-export const testProgressMulti = 1;
+export const testProgressMulti = 10;

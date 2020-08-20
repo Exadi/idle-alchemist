@@ -104,14 +104,22 @@ const taskData = [
   //6
   {
     ...defaults,
-    taskName: `(TEST) Waste Mana`,
+    taskName: `Craft Crude Cauldron`,
+    description: `Use mana to coerce ${itemData[2].name} into the shape of a cauldron.`,
     category: taskCategories.magic,
-    resultItemsLost: [{ mana: true, count: 1 }],
-    fillSpeedFunction: () => 1 / 2,
+    resultItemsLost: [
+      {
+        mana: true,
+        count: store.getState().gameState.completedTasks.includes(4) ? 10 : 20,
+      },
+      { id: 2, count: 10 },
+    ],
+    fillSpeedFunction: () => 1 / 60,
     unlocked: () => {
       let completedTasks = store.getState().gameState.completedTasks;
       return completedTasks.includes(2);
     },
+    oneTimeOnly: true,
   },
 ];
 
