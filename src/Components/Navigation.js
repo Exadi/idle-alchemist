@@ -22,6 +22,7 @@ export default function Navigation() {
     color: theme.textPrimary,
     borderBottom: `1px solid ${theme.textPrimary}`,
   };
+
   return (
     <span>
       {tabsData.map((item, idx) => {

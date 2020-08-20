@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import "./App.css";
 import TaskBox from "./Components/TaskBox";
 import InventoryDisplay from "./Components/InventoryDisplay";
@@ -30,9 +30,10 @@ function App() {
   const autoSaveTimerRef = useRef();
   const theme = useTheme();
   const unlockedTasks = useSelector((state) => state.gameState.unlockedTasks);
+  const completedTasks = useSelector((state) => state.gameState.completedTasks);
   const tab = useSelector((state) => state.gameState.selectedTab);
   //only here to cause re-render of the component when a task runs out. Otherwise, its box remains visible until clicked again.
-  const completedTasks = useSelector((state) => state.gameState.completedTasks);
+  const [visibleTasks, setVisibleTasks] = useState([]);
 
   const { showDepletedButRecoverableTasks } = useSelector(
     (state) => state.settings
@@ -64,24 +65,29 @@ function App() {
     return () => clearInterval(autoSaveTimerRef.current);
   }, [autoSaveInterval]);
 
-  let visibleTasks = taskData
-    .map((item, idx) => {
-      const unlocked = item.unlocked === undefined || item.unlocked();
-      const unlockedTask = unlockedTasks.find((task) => task.index === idx);
-      //if limit is not 0 and it's either not a one time task or it hasn't been completed, it is available
-      const showIfDepleted =
-        item.limitRecoverable && showDepletedButRecoverableTasks;
-      const limitAvailable =
-        (unlockedTask === undefined ||
-          unlockedTask.limit !== 0 ||
-          showIfDepleted) &&
-        (!item.oneTimeOnly || !taskIsCompleted(idx));
+  useEffect(() => {
+    setVisibleTasks(
+      taskData
+        .map((item, idx) => {
+          const unlocked = item.unlocked === undefined || item.unlocked();
+          //console.log(item.taskName + " unlocked? " + item.unlocked());
+          const unlockedTask = unlockedTasks.find((task) => task.index === idx);
+          //if limit is not 0 and it's either not a one time task or it hasn't been completed, it is available
+          const showIfDepleted =
+            item.limitRecoverable && showDepletedButRecoverableTasks;
+          const limitAvailable =
+            (unlockedTask === undefined ||
+              unlockedTask.limit !== 0 ||
+              showIfDepleted) &&
+            (!item.oneTimeOnly || !taskIsCompleted(idx));
 
-      const visible = unlocked && limitAvailable && item.category === tab;
+          const visible = unlocked && limitAvailable && item.category === tab;
 
-      return visible ? <TaskBox index={idx} key={idx}></TaskBox> : null;
-    })
-    .filter((task) => task !== null);
+          return visible ? <TaskBox index={idx} key={idx}></TaskBox> : null;
+        })
+        .filter((task) => task !== null)
+    );
+  }, [completedTasks, tab]);
 
   return (
     <div className="App" style={appStyles}>

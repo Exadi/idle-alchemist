@@ -8,7 +8,7 @@ import {
   addMana,
   removeMana,
 } from "../actions/gameStateActions";
-import { timerInterval } from "../utils/globalVariables";
+import { timerInterval, testProgressMulti } from "../utils/globalVariables";
 import { store as notifStore } from "react-notifications-component";
 
 export const tick = (task) => {
@@ -235,7 +235,8 @@ export const getFillSpeed = (task) => {
   //multiply by timerInterval/1000 to make it progress per second
   return (
     taskData[task.index].fillSpeedFunction(task.upgradeLevel || 0) *
-    (timerInterval / 1000)
+    (timerInterval / 1000) *
+    testProgressMulti
   );
 };
 

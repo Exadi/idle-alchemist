@@ -19,10 +19,11 @@ export function TopBar() {
     position: "absolute",
     right: "1vw",
   };
+
   return (
     <div style={topBarStyles}>
       <Navigation></Navigation>
-      <span style={resourceStyles}>{`${mana} Mana`}</span>
+      <span style={resourceStyles}>{mana !== null ? `${mana} Mana` : ""}</span>
     </div>
   );
 }

@@ -14,7 +14,7 @@ const initialState = {
   selectedTab: taskCategories.gather,
   completedTasks: [],
   maxTasks: 1,
-  mana: 0,
+  mana: null,
 };
 export default function (state = initialState, action) {
   let unlockedTasks = [...state.unlockedTasks];

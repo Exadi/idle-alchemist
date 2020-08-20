@@ -24,7 +24,6 @@ const defaults = {
   unlocked: () => true,
   firstTimeCompleteFunction: () => {},
 };
-const completedTasks = store.getState().gameState.completedTasks;
 const taskData = [
   //0
   {
@@ -46,7 +45,10 @@ const taskData = [
       { id: 2, count: 1 },
     ],
     resultItemsLost: [{ id: 0, count: 1 }],
-    unlocked: () => completedTasks.includes(5),
+    unlocked: () => {
+      let completedTasks = store.getState().gameState.completedTasks;
+      return completedTasks.includes(5);
+    },
   },
   //2
   {
@@ -58,7 +60,10 @@ const taskData = [
     fillSpeedFunction: () => 1 / 30,
     resultItemsGained: [{ mana: true, count: 1 }],
     resultItemsLost: [{ id: 1, count: 1 }],
-    unlocked: () => completedTasks.includes(1),
+    unlocked: () => {
+      let completedTasks = store.getState().gameState.completedTasks;
+      return completedTasks.includes(1);
+    },
   },
   //3
   {
@@ -91,7 +96,10 @@ const taskData = [
     ],
     fillSpeedFunction: () => 1 / 60,
     oneTimeOnly: true,
-    unlocked: () => completedTasks.includes(3) && completedTasks.includes(4),
+    unlocked: () => {
+      let completedTasks = store.getState().gameState.completedTasks;
+      return completedTasks.includes(3) && completedTasks.includes(4);
+    },
   },
   //6
   {
@@ -100,7 +108,10 @@ const taskData = [
     category: taskCategories.magic,
     resultItemsLost: [{ mana: true, count: 1 }],
     fillSpeedFunction: () => 1 / 2,
-    unlocked: () => completedTasks.includes(2),
+    unlocked: () => {
+      let completedTasks = store.getState().gameState.completedTasks;
+      return completedTasks.includes(2);
+    },
   },
 ];
 
