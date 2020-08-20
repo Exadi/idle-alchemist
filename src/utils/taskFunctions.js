@@ -192,10 +192,10 @@ export const timeRemainingDisplay = (task) => {
   let minutes = Math.floor((timeRemaining - hours * 3600) / 60);
   let seconds = timeRemaining - hours * 3600 - minutes * 60;
 
-  if (hours == 0 && minutes <= 1 && timeRemaining <= 60) {
+  if (hours === 0 && minutes <= 1 && timeRemaining <= 60) {
     //don't turn 60s into 1 minute
     return `${timeRemaining.toFixed(2)}s`;
-  } else if (hours == 0) {
+  } else if (hours === 0) {
     return `${minutes < 10 ? "0" + minutes : minutes}:${
       seconds < 10 ? "0" + seconds.toFixed(0) : seconds.toFixed(0)
     }`;

@@ -66,6 +66,9 @@ function App() {
   }, [autoSaveInterval]);
 
   useEffect(() => {
+    //TODO maybe find a way to update this less often than every time a task ticks
+    //e.g. when a limited task runs out or any time a limited task or any task is completed.
+    //but eventually tasks will be completing every tick so the non-limited options may be pointless...
     setVisibleTasks(
       taskData
         .map((item, idx) => {
@@ -87,7 +90,7 @@ function App() {
         })
         .filter((task) => task !== null)
     );
-  }, [completedTasks, tab]);
+  }, [completedTasks, tab, unlockedTasks, showDepletedButRecoverableTasks]);
 
   return (
     <div className="App" style={appStyles}>
